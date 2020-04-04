@@ -8,9 +8,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- *
+ * A simple test client just to call REST here.
  */
 public class TestClient {
+
+    /**
+     * Starter for the client.
+     * <p>
+     * No args are currently evaluated.
+     *
+     * @param args the starter arguments
+     */
     public static void main(String[] args) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8080/rest");
