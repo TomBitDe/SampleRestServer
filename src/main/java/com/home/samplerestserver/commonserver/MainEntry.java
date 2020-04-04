@@ -13,8 +13,15 @@ import org.apache.log4j.xml.DOMConfigurator;
 public class MainEntry {
     private static final Logger LOG = Logger.getLogger(MainEntry.class.getName());
 
-    public static final Boolean GLOBAL_LOCK = Boolean.FALSE; // Used for global synchronization
-    public static Boolean standAloneMode = Boolean.FALSE; // Indicates if the jar is running without the TSW process
+    /**
+     * Used for global synchronization, if needed.
+     */
+    public static final Boolean GLOBAL_LOCK = Boolean.FALSE;
+
+    /**
+     * Indicates if the jar is running without the TSW process
+     */
+    public static Boolean standAloneMode = Boolean.FALSE;
 
     /*
      * Calls to native C-functions.

@@ -11,6 +11,11 @@ import org.apache.log4j.Logger;
 public class MessageResource {
     private static final Logger LOG = Logger.getLogger(MessageResource.class.getName());
 
+    /**
+     * Produce a simple message string.
+     *
+     * @return the "Yea! "
+     */
     @GET
     @Path("simple")
     @Produces(MediaType.TEXT_PLAIN)
@@ -19,6 +24,11 @@ public class MessageResource {
         return "Yea! ";
     }
 
+    /**
+     * Produce a simple message containing server information.
+     *
+     * @return the server information
+     */
     @GET
     @Path("serverinfo")
     @Produces(MediaType.TEXT_PLAIN)
@@ -27,6 +37,11 @@ public class MessageResource {
         return System.getProperty("os.name") + " " + System.getProperty("os.version");
     }
 
+    /**
+     * Show the implemented options.
+     *
+     * @return the options
+     */
     @OPTIONS
     @Produces(MediaType.TEXT_PLAIN)
     public String options() {
