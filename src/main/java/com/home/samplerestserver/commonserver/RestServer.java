@@ -12,7 +12,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class RestServer {
     private static final Logger LOG = Logger.getLogger(RestServer.class.getName());
 
-    private static HttpServer httpServer;
+    private static HttpServer httpServer = null;
 
     /**
      * It's not allowed to create an instance.
@@ -28,8 +28,10 @@ public class RestServer {
     public static boolean startServices() {
         LOG.info("Enter startServices");
 
-        ResourceConfig rc = new ResourceConfig().packages("com.home.samplerestserver.commonserver");
-        httpServer = JdkHttpServerFactory.createHttpServer(URI.create("http://localhost:8080/rest"), rc);
+        if (httpServer == null) {
+            ResourceConfig rc = new ResourceConfig().packages("com.home.samplerestserver.commonserver");
+            httpServer = JdkHttpServerFactory.createHttpServer(URI.create("http://localhost:8080/rest"), rc);
+        }
 
         return true;
     }
@@ -42,7 +44,11 @@ public class RestServer {
     public static boolean stopServices() {
         LOG.info("Enter stopServices");
 
-        httpServer.stop(0);
+        if (httpServer != null) {
+            httpServer.stop(0);
+            httpServer = null;
+        }
+
         LOG.info("Http server stopped");
 
         return true;

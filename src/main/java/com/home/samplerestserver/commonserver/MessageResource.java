@@ -38,6 +38,23 @@ public class MessageResource {
     }
 
     /**
+     * Produce a simple message containing server information as XML.
+     *
+     * @return the server information
+     */
+    @GET
+    @Path("xmlserverinfo")
+    @Produces(MediaType.APPLICATION_XML)
+    public ServerInfo xmlserverinfo() {
+        LOG.debug("Enter xmlserverinfo");
+
+        ServerInfo serverInfo = new ServerInfo();
+        serverInfo.setServer(System.getProperty("os.name") + " " + System.getProperty("os.version"));
+
+        return serverInfo;
+    }
+
+    /**
      * Show the implemented options.
      *
      * @return the options

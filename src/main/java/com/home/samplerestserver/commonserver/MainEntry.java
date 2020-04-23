@@ -27,12 +27,15 @@ public class MainEntry {
      * Calls to native C-functions.
      * The calls will be redirected to the kwsrcv-module.
      * See kwsrcv.h for more details. Exmales are the following calls:
-     *
-     * public static native boolean kwsrcvrcv(long seqn, long ext_seqn, int idx, String node, String mandant, String crea_dttm, String modname, long tlgType);
-     * public static native void kwsrcvplog(String plms, String domn, String phbl, String mandant, long refNo, int idx, String paramsdomn);
      */
+    public static native String kwsrcvrcv(String inBuffer);
+
+    public static native void kwsrcvplog(String plms, String domn, String phbl, String mandant, long refNo, int idx, String paramsdomn);
+
     /**
-     * Called by native module to start and publish the RestServices
+     * Called by native module to start and publish the RestServices.
+     * <p>
+     * Start the logfile watchdog here.<br>
      *
      * @return false in any error case else true
      */
@@ -42,6 +45,7 @@ public class MainEntry {
 
         String configFile = System.getProperty("log4j.configurationFile", "log4j.xml");
         DOMConfigurator.configureAndWatch(configFile, 30 * 1000);
+
         try {
             return RestServer.startServices();
         }
@@ -55,7 +59,7 @@ public class MainEntry {
     }
 
     /**
-     * Called by native module to stop the published RestServices
+     * Called by native module to stop the published RestServices.
      *
      * @return false in any error case else true
      */

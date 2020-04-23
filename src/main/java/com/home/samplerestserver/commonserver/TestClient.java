@@ -1,5 +1,6 @@
 package com.home.samplerestserver.commonserver;
 
+import com.sun.jersey.api.client.WebResource;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -34,6 +35,10 @@ public class TestClient {
         response = request.get();
         reply = response.readEntity(String.class);
         System.out.println(reply);
+
+        WebResource s2 = com.sun.jersey.api.client.Client.create().resource("http://localhost:8080/rest");
+        WebResource.Builder sb2 = s2.path("message").path("xmlserverinfo").accept(MediaType.APPLICATION_XML);
+        System.out.println(sb2.get(ServerInfo.class).getServer());
 
         resourceTarget = target.path("message");
         request = resourceTarget.request(MediaType.TEXT_PLAIN);
