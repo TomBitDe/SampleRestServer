@@ -26,10 +26,28 @@ public class MainEntry {
     /*
      * Calls to native C-functions.
      * The calls will be redirected to the kwsrcv-module.
-     * See kwsrcv.h for more details. Exmales are the following calls:
+     * See kwsrcv.h for more details. Examples are the following calls:
+     */
+    /**
+     * A sample native C call.
+     *
+     * @param inBuffer just a text
+     *
+     * @return the inBuffer text echoed
      */
     public static native String kwsrcvrcv(String inBuffer);
 
+    /**
+     * A sample native C call to create a PLOG message.
+     *
+     * @param plms
+     * @param domn
+     * @param phbl
+     * @param mandant
+     * @param refNo
+     * @param idx
+     * @param paramsdomn
+     */
     public static native void kwsrcvplog(String plms, String domn, String phbl, String mandant, long refNo, int idx, String paramsdomn);
 
     /**
