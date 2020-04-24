@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.ServerInfo;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import javax.ws.rs.client.Client;
@@ -21,31 +17,45 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
- * @author Tom
+ * Integration test for MessageResource
  */
 public class MessageResourceIT {
     WebTarget target;
 
+    /**
+     * No need to put some code in the constructor until now.
+     */
     public MessageResourceIT() {
     }
 
+    /**
+     * No setup needed util now.
+     */
     @BeforeClass
     public static void setUpClass() {
         MainEntry.startWS();
     }
 
+    /**
+     * No tear down needed until now.
+     */
     @AfterClass
     public static void tearDownClass() {
         MainEntry.stopWS();
     }
 
+    /**
+     * Method test setup creates a new REST client for each test.
+     */
     @Before
     public void setUp() {
         Client client = ClientBuilder.newClient();
         target = client.target("http://localhost:8080/rest");
     }
 
+    /**
+     * No method test tesr down needed until now.
+     */
     @After
     public void tearDown() {
     }

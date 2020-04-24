@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.home.samplerestserver.commonserver;
 
 import org.junit.After;
@@ -13,26 +8,40 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
- * @author Tom
+ * Unit tests for MainEntry.
  */
 public class MainEntryTest {
 
+    /**
+     * No need to put some code in the constructor until now.
+     */
     public MainEntryTest() {
     }
 
+    /**
+     * No setup needed util now.
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     * No tear down needed until now.
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     * No method test setup needed until now.
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     * No method test tesr down needed until now.
+     */
     @After
     public void tearDown() {
     }

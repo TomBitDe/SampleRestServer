@@ -1,5 +1,6 @@
-package com.home.samplerestserver.commonserver;
+package com.home.samplerestserver.simpleclient;
 
+import com.home.samplerestserver.messages.ServerInfo;
 import com.sun.jersey.api.client.WebResource;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

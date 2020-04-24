@@ -1,4 +1,4 @@
-package com.home.samplerestserver.commonserver;
+package com.home.samplerestserver.messages;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

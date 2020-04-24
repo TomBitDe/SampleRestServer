@@ -1,5 +1,6 @@
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.ServerInfo;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
