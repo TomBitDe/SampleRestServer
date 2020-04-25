@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
  * A simple test client just to call REST here.
  */
 public class TestClient {
-
     /**
      * Starter for the client.
      * <p>
