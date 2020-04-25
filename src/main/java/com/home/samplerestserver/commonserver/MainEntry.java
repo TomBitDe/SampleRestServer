@@ -1,5 +1,7 @@
 package com.home.samplerestserver.commonserver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -61,8 +63,14 @@ public class MainEntry {
         LOG.info("Enter startWS");
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
 
-        String configFile = System.getProperty("log4j.configurationFile", "log4j.xml");
-        DOMConfigurator.configureAndWatch(configFile, 30 * 1000);
+        try {
+            String fileUrl = System.getProperty("log4j.configuration", "log4j.xml");
+            URL url = new URL(fileUrl);
+            DOMConfigurator.configureAndWatch(url.getFile(), 30 * 1000);
+        }
+        catch (MalformedURLException e) {
+            LOG.warn(e.getMessage());
+        }
 
         try {
             return RestServer.startServices();
