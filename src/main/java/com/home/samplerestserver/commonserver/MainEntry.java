@@ -79,7 +79,7 @@ public class MainEntry {
             LOG.error(e, e);
         }
         finally {
-            LOG.info("Leave startRS");
+            LOG.info("Leave startWS");
         }
         return false;
     }
