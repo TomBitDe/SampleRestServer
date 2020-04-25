@@ -16,7 +16,7 @@
     </appender>
 
     <appender name="rollingFile" class="org.apache.log4j.RollingFileAppender">
-        <param name="file"                  value="../logs/RestServer.log" />
+        <param name="file"                  value="./logs/SampleRestServer.log" />
         <param name="threshold"             value="trace" />
         <param name="append"                value="true" />
         <param name="immediateFlush"        value="true" />
@@ -38,10 +38,10 @@
         </layout>
     </appender>
     <root>
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="console"/>
-        <!--
         <appender-ref ref="rollingFile"/>
+        <!--
         <appender-ref ref="dailyRollingFile"/>
         -->
     </root>
