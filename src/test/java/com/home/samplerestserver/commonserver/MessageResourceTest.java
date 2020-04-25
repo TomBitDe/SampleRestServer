@@ -17,15 +17,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Integration test for MessageResource
+ * Test for MessageResource
  */
-public class MessageResourceIT {
+public class MessageResourceTest {
     WebTarget target;
 
     /**
      * No need to put some code in the constructor until now.
      */
-    public MessageResourceIT() {
+    public MessageResourceTest() {
     }
 
     /**
