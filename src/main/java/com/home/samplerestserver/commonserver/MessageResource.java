@@ -21,7 +21,9 @@ public class MessageResource {
     @Path("simple")
     @Produces(MediaType.TEXT_PLAIN)
     public String message() {
-        LOG.debug("Enter message");
+        final String ret = "Yea! ";
+        LOG.debug("Return [" + ret + ']');
+
         return "Yea! ";
     }
 
@@ -34,8 +36,10 @@ public class MessageResource {
     @Path("serverinfo")
     @Produces(MediaType.TEXT_PLAIN)
     public String serverinfo() {
-        LOG.debug("Enter serverinfo");
-        return System.getProperty("os.name") + " " + System.getProperty("os.version");
+        final String ret = System.getProperty("os.name") + " " + System.getProperty("os.version");
+        LOG.debug("Return [" + ret + ']');
+
+        return ret;
     }
 
     /**
@@ -47,10 +51,10 @@ public class MessageResource {
     @Path("xmlserverinfo")
     @Produces(MediaType.APPLICATION_XML)
     public ServerInfo xmlserverinfo() {
-        LOG.debug("Enter xmlserverinfo");
-
         ServerInfo serverInfo = new ServerInfo();
+
         serverInfo.setServer(System.getProperty("os.name") + " " + System.getProperty("os.version"));
+        LOG.debug("Return [" + serverInfo.getServer() + ']');
 
         return serverInfo;
     }
@@ -63,7 +67,9 @@ public class MessageResource {
     @OPTIONS
     @Produces(MediaType.TEXT_PLAIN)
     public String options() {
-        LOG.debug("Enter options");
-        return "GET";
+        final String ret = "GET";
+        LOG.debug("Return [" + ret + ']');
+
+        return ret;
     }
 }
