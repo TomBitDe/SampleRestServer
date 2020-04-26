@@ -53,7 +53,9 @@ public class MainEntryTest {
     public void testStartWS() {
         System.out.println("startWS");
         boolean result = MainEntry.startWS();
-        Assert.assertEquals(true, result);
+        Assert.assertTrue(result);
+        result = MainEntry.startWS();
+        Assert.assertTrue(result);
     }
 
     /**
@@ -63,7 +65,9 @@ public class MainEntryTest {
     public void testStopWS() {
         System.out.println("stopWS");
         boolean result = MainEntry.stopWS();
-        Assert.assertEquals(true, result);
+        Assert.assertTrue(result);
+        result = MainEntry.stopWS();
+        Assert.assertTrue(result);
     }
 
     /**
@@ -74,6 +78,6 @@ public class MainEntryTest {
         System.out.println("main");
         String[] args = null;
         MainEntry.main(args);
-        Assert.assertEquals(true, MainEntry.stopWS());
+        Assert.assertTrue(MainEntry.stopWS());
     }
 }

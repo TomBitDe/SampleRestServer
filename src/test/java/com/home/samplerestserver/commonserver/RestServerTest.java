@@ -1,6 +1,5 @@
 package com.home.samplerestserver.commonserver;
 
-import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -51,10 +50,10 @@ public class RestServerTest {
      * Test of startServices method, of class RestServer.
      */
     @Test
-    public void testStartServices() throws IOException {
+    public void testStartServices() {
         System.out.println("startServices");
-        boolean result = RestServer.startServices();
-        Assert.assertEquals(true, result);
+        Assert.assertTrue(RestServer.startServices());
+        Assert.assertTrue(RestServer.startServices());
     }
 
     /**
@@ -63,7 +62,7 @@ public class RestServerTest {
     @Test
     public void testStopServices() {
         System.out.println("stopServices");
-        boolean result = RestServer.stopServices();
-        Assert.assertEquals(true, result);
+        Assert.assertTrue(RestServer.stopServices());
+        Assert.assertTrue(RestServer.stopServices());
     }
 }
