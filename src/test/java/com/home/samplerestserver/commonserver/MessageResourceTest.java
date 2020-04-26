@@ -3,12 +3,10 @@ package com.home.samplerestserver.commonserver;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -67,10 +65,9 @@ public class MessageResourceTest {
     public void testMessage() {
         System.out.println("message");
 
-        WebTarget resourceTarget = target.path("message/simple");
-        Invocation.Builder request = resourceTarget.request(MediaType.TEXT_PLAIN);
-        Response response = request.get();
-        String reply = response.readEntity(String.class);
+        WebResource s2 = com.sun.jersey.api.client.Client.create().resource("http://localhost:8080/rest");
+        Builder sb2 = s2.path("message").path("simple").accept(MediaType.TEXT_PLAIN);
+        String reply = sb2.get(String.class);
 
         Assert.assertEquals("Yea! ", reply);
     }
@@ -82,10 +79,9 @@ public class MessageResourceTest {
     public void testServerinfo() {
         System.out.println("serverinfo");
 
-        WebTarget resourceTarget = target.path("message/serverinfo");
-        Invocation.Builder request = resourceTarget.request(MediaType.TEXT_PLAIN);
-        Response response = request.get();
-        String reply = response.readEntity(String.class);
+        WebResource s2 = com.sun.jersey.api.client.Client.create().resource("http://localhost:8080/rest");
+        Builder sb2 = s2.path("message").path("serverinfo").accept(MediaType.TEXT_PLAIN);
+        String reply = sb2.get(String.class);
 
         Assert.assertEquals("Windows 8.1 6.3", reply);
     }
@@ -111,10 +107,9 @@ public class MessageResourceTest {
     public void testOptions() {
         System.out.println("options");
 
-        WebTarget resourceTarget = target.path("message");
-        Invocation.Builder request = resourceTarget.request(MediaType.TEXT_PLAIN);
-        Response response = request.options();
-        String reply = response.readEntity(String.class);
+        WebResource s2 = com.sun.jersey.api.client.Client.create().resource("http://localhost:8080/rest");
+        Builder sb2 = s2.path("message").accept(MediaType.TEXT_PLAIN);
+        String reply = sb2.get(String.class);
 
         Assert.assertEquals("GET", reply);
     }

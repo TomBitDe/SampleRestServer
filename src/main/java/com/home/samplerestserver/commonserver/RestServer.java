@@ -1,9 +1,13 @@
 package com.home.samplerestserver.commonserver;
 
-import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.ServerConfiguration;
+import org.glassfish.grizzly.http.server.accesslog.AccessLogBuilder;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -28,11 +32,22 @@ public class RestServer {
     public static boolean startServices() {
         LOG.info("Enter startServices");
 
-        if (httpServer == null) {
-            ResourceConfig rc = new ResourceConfig().packages("com.home.samplerestserver.commonserver");
-            httpServer = JdkHttpServerFactory.createHttpServer(URI.create("http://localhost:8080/rest"), rc);
-        }
+        try {
+            if (httpServer == null) {
+                ResourceConfig rc = new ResourceConfig().packages("com.home.samplerestserver.commonserver").property("jersey.config.server.tracing.type ", "ALL");
+                httpServer = GrizzlyHttpServerFactory.createHttpServer(new URI("http://localhost:8080/rest"), rc, false);
+                ServerConfiguration serverConfiguration = httpServer.getServerConfiguration();
 
+                final AccessLogBuilder builder = new AccessLogBuilder("./logs/access.log");
+                builder.instrument(serverConfiguration);
+
+                httpServer.start();
+            }
+        }
+        catch (URISyntaxException | IOException ex) {
+            LOG.error("StartServices failed: " + ex.getMessage());
+            return false;
+        }
         return true;
     }
 
@@ -45,7 +60,7 @@ public class RestServer {
         LOG.info("Enter stopServices");
 
         if (httpServer != null) {
-            httpServer.stop(0);
+            httpServer.shutdownNow();
             httpServer = null;
         }
 
