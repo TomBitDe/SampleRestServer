@@ -1,9 +1,13 @@
 package com.home.samplerestserver.simpleclient;
 
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import com.home.samplerestserver.messages.ServerInfo;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.StatusType;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 /**
  * A simple test client just to call REST here.
@@ -17,22 +21,25 @@ public class TestClient {
      * @param args the starter arguments
      */
     public static void main(String[] args) {
-        WebResource s2 = com.sun.jersey.api.client.Client.create().resource("http://localhost:8080/rest");
-        WebResource.Builder sb2 = s2.path("message").path("simple").accept(MediaType.TEXT_PLAIN);
-        ClientResponse response = sb2.get(ClientResponse.class);
-        StatusType statusInfo = response.getStatusInfo();
-        System.out.println("StatusCode=[" + statusInfo.getStatusCode() + "} Reason=[" + statusInfo.getReasonPhrase() + ']');
-        System.out.println(response.getEntity(String.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        WebTarget webTarget = client.target("http://localhost:8080/rest/").path("message").path("simple");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        String response = invocationBuilder.get(String.class);
+        System.out.println(response);
 
-        sb2 = s2.path("message").path("serverinfo").accept(MediaType.TEXT_PLAIN);
-        response = sb2.get(ClientResponse.class);
-        System.out.println(response.getEntity(String.class));
+        webTarget = client.target("http://localhost:8080/rest/").path("message").path("serverinfo");
+        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        response = invocationBuilder.get(String.class);
+        System.out.println(response);
 
-//        sb2 = s2.path("message").path("xmlserverinfo").accept(MediaType.APPLICATION_XML);
-//        System.out.println(sb2.get(ServerInfo.class).getServer());
-//
-        sb2 = s2.path("message").path("xmlserverinfo").accept(MediaType.TEXT_PLAIN);
-        response = sb2.get(ClientResponse.class);
-        System.out.println(response.getEntity(String.class));
+        webTarget = client.target("http://localhost:8080/rest/").path("message").path("xmlserverinfo");
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+        response = invocationBuilder.get(ServerInfo.class).getServer();
+        System.out.println(response);
+
+        webTarget = client.target("http://localhost:8080/rest/").path("message");
+        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        response = invocationBuilder.options(String.class);
+        System.out.println(response);
     }
 }
