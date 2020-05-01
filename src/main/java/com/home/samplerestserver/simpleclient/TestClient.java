@@ -2,6 +2,7 @@ package com.home.samplerestserver.simpleclient;
 
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
+import com.home.samplerestserver.messages.UserInfo;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -43,12 +44,25 @@ public class TestClient {
 
         webTarget = client.target("http://localhost:8080/rest/").path("message").path("credential");
         invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        Credential resp = invocationBuilder.get(Credential.class);
+        Credential credential = invocationBuilder.get(Credential.class);
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Credential.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.marshal(resp, System.out);
+            jaxbMarshaller.marshal(credential, System.out);
+        }
+        catch (JAXBException jbex) {
+            System.err.println(jbex);
+        }
+
+        webTarget = client.target("http://localhost:8080/rest/").path("message").path("userinfo");
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+        UserInfo userInfo = invocationBuilder.get(UserInfo.class);
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(UserInfo.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(userInfo, System.out);
         }
         catch (JAXBException jbex) {
             System.err.println(jbex);

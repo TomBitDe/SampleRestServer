@@ -6,12 +6,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Credential information.
  */
 @XmlRootElement
 public class Credential implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * No @XmlElement annotation here. Otherwise an exception happens.
+     */
     private String nickName;
     private int pinCode;
 
@@ -28,6 +31,11 @@ public class Credential implements Serializable {
         this.pinCode = pinCode;
     }
 
+    /**
+     * The annotation must be placed here, not at the private declaration position.
+     *
+     * @return the nick name
+     */
     @XmlElement
     public String getNickName() {
         return nickName;
@@ -37,6 +45,11 @@ public class Credential implements Serializable {
         this.nickName = nickName;
     }
 
+    /**
+     * The annotation must be placed here, not at the private declaration position.
+     *
+     * @return the pin code
+     */
     @XmlElement
     public int getPinCode() {
         return pinCode;

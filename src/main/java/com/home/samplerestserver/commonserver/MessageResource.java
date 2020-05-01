@@ -2,6 +2,7 @@ package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
+import com.home.samplerestserver.messages.UserInfo;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
@@ -70,6 +71,22 @@ public class MessageResource {
     @Produces(MediaType.APPLICATION_XML)
     public Credential credential() {
         Credential val = new Credential("Dummy01", 1234);
+
+        LOG.debug(val);
+
+        return val;
+    }
+
+    /**
+     * Produce a UserInfo message containing a complex class as XML.
+     *
+     * @return the user informations
+     */
+    @GET
+    @Path("userinfo")
+    @Produces(MediaType.APPLICATION_XML)
+    public UserInfo userinfo() {
+        UserInfo val = new UserInfo("Hans", new Credential("Dummy01", 1234));
 
         LOG.debug(val);
 

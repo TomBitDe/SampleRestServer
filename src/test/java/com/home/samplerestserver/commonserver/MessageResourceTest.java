@@ -2,6 +2,7 @@ package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
+import com.home.samplerestserver.messages.UserInfo;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -116,6 +117,20 @@ public class MessageResourceTest {
         Credential response = invocationBuilder.get(Credential.class);
 
         Assert.assertEquals(new Credential("Dummy01", 1234), response);
+    }
+
+    /**
+     * Test of userinfo method, of class MessageResource.
+     */
+    @Test
+    public void testUserInfo() {
+        System.out.println("userinfo");
+
+        webTarget = webTarget.path("message").path("userinfo");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+        UserInfo response = invocationBuilder.get(UserInfo.class);
+
+        Assert.assertEquals(new UserInfo("Hans", new Credential("Dummy01", 1234)), response);
     }
 
     /**
