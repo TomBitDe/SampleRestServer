@@ -1,5 +1,6 @@
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -101,6 +102,20 @@ public class MessageResourceTest {
         String response = invocationBuilder.get(ServerInfo.class).getServer();
 
         Assert.assertEquals("Windows 8.1 6.3", response);
+    }
+
+    /**
+     * Test of credential method, of class MessageResource.
+     */
+    @Test
+    public void testCredential() {
+        System.out.println("credential");
+
+        webTarget = webTarget.path("message").path("credential");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+        Credential response = invocationBuilder.get(Credential.class);
+
+        Assert.assertEquals(new Credential("Dummy01", 1234), response);
     }
 
     /**

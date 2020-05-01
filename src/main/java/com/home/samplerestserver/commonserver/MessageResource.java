@@ -1,5 +1,6 @@
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -57,6 +58,22 @@ public class MessageResource {
         LOG.debug("Return [" + serverInfo.getServer() + ']');
 
         return serverInfo;
+    }
+
+    /**
+     * Produce a Credential message containing two elements as XML.
+     *
+     * @return the credential informations
+     */
+    @GET
+    @Path("credential")
+    @Produces(MediaType.APPLICATION_XML)
+    public Credential credential() {
+        Credential val = new Credential("Dummy01", 1234);
+
+        LOG.debug(val);
+
+        return val;
     }
 
     /**

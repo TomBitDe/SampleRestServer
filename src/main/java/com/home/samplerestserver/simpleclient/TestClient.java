@@ -1,11 +1,15 @@
 package com.home.samplerestserver.simpleclient;
 
+import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
@@ -36,6 +40,19 @@ public class TestClient {
         invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
         response = invocationBuilder.get(ServerInfo.class).getServer();
         System.out.println(response);
+
+        webTarget = client.target("http://localhost:8080/rest/").path("message").path("credential");
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+        Credential resp = invocationBuilder.get(Credential.class);
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Credential.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(resp, System.out);
+        }
+        catch (JAXBException jbex) {
+            System.err.println(jbex);
+        }
 
         webTarget = client.target("http://localhost:8080/rest/").path("message");
         invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
