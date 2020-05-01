@@ -24,14 +24,14 @@ public class JsonObjectFromUrlUtil {
             HttpURLConnection conn = (HttpURLConnection) (new URL(url)).openConnection();
             conn.setRequestProperty("Accept", "application/json");
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Problem mit der Url " + url + ": " + conn.getResponseMessage());
+                throw new RuntimeException("Problem with the Url " + url + ": " + conn.getResponseMessage());
             }
             try (JsonReader jsonRdr = Json.createReader((InputStream) conn.getContent())) {
                 return jsonRdr.readObject();
             }
         }
         catch (IOException ex) {
-            throw new RuntimeException("Problem mit der Url: " + url, ex);
+            throw new RuntimeException("Problem with the Url: " + url, ex);
         }
     }
 }
