@@ -1,8 +1,10 @@
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.home.samplerestserver.messages.UserInfo;
+import java.util.Date;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
@@ -15,6 +17,19 @@ public class MessageResource {
     private static final Logger LOG = Logger.getLogger(MessageResource.class.getName());
 
     /**
+     * Produce a pong message string.
+     *
+     * @return the pong text
+     */
+    @GET
+    @Path("ping")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String ping() {
+        System.out.println("RESTful Service 'message' is running ==> ping");
+        return "Pong on " + new Date().toString();
+    }
+
+    /**
      * Produce a simple message string.
      *
      * @return the "Yea! "
@@ -22,7 +37,7 @@ public class MessageResource {
     @GET
     @Path("simple")
     @Produces(MediaType.TEXT_PLAIN)
-    public String message() {
+    public String simple() {
         final String ret = "Yea! ";
         LOG.debug("Return [" + ret + ']');
 
@@ -87,6 +102,22 @@ public class MessageResource {
     @Produces(MediaType.APPLICATION_XML)
     public UserInfo userinfo() {
         UserInfo val = new UserInfo("Hans", new Credential("Dummy01", 1234));
+
+        LOG.debug(val);
+
+        return val;
+    }
+
+    /**
+     * Produce a Airline message containing a simple class as JSON.
+     *
+     * @return the airline informations
+     */
+    @GET
+    @Path("jsonairlineinfo")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Airline jsonairlineinfo() {
+        Airline val = new Airline("EW", "EuroWings");
 
         LOG.debug(val);
 

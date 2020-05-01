@@ -1,5 +1,6 @@
 package com.home.samplerestserver.simpleclient;
 
+import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.home.samplerestserver.messages.UserInfo;
@@ -8,6 +9,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -30,6 +32,11 @@ public class TestClient {
         WebTarget webTarget = client.target("http://localhost:8080/rest/").path("message").path("simple");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
+        System.out.println(response);
+
+        webTarget = client.target("http://localhost:8080/rest/").path("message").path("ping");
+        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        response = invocationBuilder.get(String.class);
         System.out.println(response);
 
         webTarget = client.target("http://localhost:8080/rest/").path("message").path("serverinfo");
@@ -66,6 +73,23 @@ public class TestClient {
         }
         catch (JAXBException jbex) {
             System.err.println(jbex);
+        }
+
+        Response resp = client.target("http://localhost:8080/rest/")
+                .path("message")
+                .path("jsonairlineinfo")
+                .request(MediaType.APPLICATION_JSON)
+                .get();
+
+        if (resp.getStatus() > 300) {
+            String msg = String.format("ERROR: status: %d",
+                                       resp.getStatus());
+            System.err.println(msg);
+        }
+        else {
+            Airline airline = resp.readEntity(Airline.class);
+
+            System.out.println(airline.toString());
         }
 
         webTarget = client.target("http://localhost:8080/rest/").path("message");

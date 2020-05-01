@@ -1,5 +1,6 @@
 package com.home.samplerestserver.commonserver;
 
+import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.home.samplerestserver.messages.UserInfo;
@@ -64,11 +65,25 @@ public class MessageResourceTest {
     }
 
     /**
-     * Test of message method, of class MessageResource.
+     * Test of ping method, of class MessageResource.
      */
     @Test
-    public void testMessage() {
-        System.out.println("message");
+    public void testPing() {
+        System.out.println("ping");
+
+        webTarget = webTarget.path("message").path("ping");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        String response = invocationBuilder.get(String.class);
+
+        Assert.assertTrue(response.startsWith("Pong on "));
+    }
+
+    /**
+     * Test of simple method, of class MessageResource.
+     */
+    @Test
+    public void testSimple() {
+        System.out.println("simple");
 
         webTarget = webTarget.path("message").path("simple");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
@@ -131,6 +146,20 @@ public class MessageResourceTest {
         UserInfo response = invocationBuilder.get(UserInfo.class);
 
         Assert.assertEquals(new UserInfo("Hans", new Credential("Dummy01", 1234)), response);
+    }
+
+    /**
+     * Test of airlineinfo method, of class MessageResource.
+     */
+    @Test
+    public void testJsonAirlineInfo() {
+        System.out.println("jsonairlineinfo");
+
+        webTarget = webTarget.path("message").path("jsonairlineinfo");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        Airline response = invocationBuilder.get(Airline.class);
+
+        Assert.assertEquals(new Airline("EW", "EuroWings"), response);
     }
 
     /**
