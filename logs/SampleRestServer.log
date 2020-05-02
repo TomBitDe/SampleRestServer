@@ -1,0 +1,11 @@
+02.05.2020 19:57:42,162  INFO com.home.samplerestserver.commonserver.MainEntry(startWS:63) - Enter startWS
+02.05.2020 19:57:42,178  INFO com.home.samplerestserver.commonserver.RestServer(startServices:48) - Enter startServices
+02.05.2020 19:57:43,537  INFO com.home.samplerestserver.commonserver.RestServer(startServices:60) - Jersey app started with WADL available at http://localhost:8080/rest/application.wadl
+02.05.2020 19:57:43,537  INFO com.home.samplerestserver.commonserver.MainEntry(startWS:82) - Leave startWS
+02.05.2020 19:58:09,604 DEBUG com.home.samplerestserver.commonserver.MessageResource(simple:42) - Return [Yea! ]
+02.05.2020 19:58:09,666 DEBUG com.home.samplerestserver.commonserver.MessageResource(serverinfo:57) - Return [Windows 8.1 6.3]
+02.05.2020 19:58:09,666 DEBUG com.home.samplerestserver.commonserver.MessageResource(xmlserverinfo:74) - Return [Windows 8.1 6.3]
+02.05.2020 19:58:09,791 DEBUG com.home.samplerestserver.commonserver.MessageResource(credential:90) - Credential{nickName=Dummy01, pinCode=1234}
+02.05.2020 19:58:09,807 DEBUG com.home.samplerestserver.commonserver.MessageResource(userinfo:106) - UserInfo{userName=Hans, credential=Credential{nickName=Dummy01, pinCode=1234}}
+02.05.2020 19:58:09,838 DEBUG com.home.samplerestserver.commonserver.MessageResource(jsonairlineinfo:122) - Airline{airlineCode=EW, airlineName=EuroWings}
+02.05.2020 19:58:10,838 DEBUG com.home.samplerestserver.commonserver.MessageResource(options:136) - Return [GET]
