@@ -1,13 +1,14 @@
 package com.home.samplerestserver.commonserver;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Special handler for uncaught exceptions.
  */
 public class UncaughtExceptionHandlerImpl implements UncaughtExceptionHandler {
-    private static final Logger LOG = Logger.getLogger(UncaughtExceptionHandlerImpl.class.getName());
+    private static final Logger LOG = LogManager.getLogger(UncaughtExceptionHandlerImpl.class.getName());
 
     /**
      * Log the error message for the uncaught exception.

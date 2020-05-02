@@ -1,9 +1,7 @@
 package com.home.samplerestserver.commonserver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The Main entry point for calls from or into the "native" C world.
@@ -13,7 +11,7 @@ import org.apache.log4j.xml.DOMConfigurator;
  * The main method is the starter if not running in the C environment.<br>
  */
 public class MainEntry {
-    private static final Logger LOG = Logger.getLogger(MainEntry.class.getName());
+    private static final Logger LOG = LogManager.getLogger(MainEntry.class.getName());
 
     /**
      * Used for global synchronization, if needed.
@@ -62,15 +60,6 @@ public class MainEntry {
     public static boolean startWS() {
         LOG.info("Enter startWS");
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
-
-        try {
-            String fileUrl = System.getProperty("log4j.configuration", "log4j.xml");
-            URL url = new URL(fileUrl);
-            DOMConfigurator.configureAndWatch(url.getFile(), 30 * 1000);
-        }
-        catch (MalformedURLException e) {
-            LOG.warn(e.getMessage());
-        }
 
         try {
             return RestServer.startServices();

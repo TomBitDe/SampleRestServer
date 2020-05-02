@@ -7,14 +7,15 @@ import com.home.samplerestserver.messages.UserInfo;
 import java.util.Date;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Simple services.
  */
 @Path("message")
 public class MessageResource {
-    private static final Logger LOG = Logger.getLogger(MessageResource.class.getName());
+    private static final Logger LOG = LogManager.getLogger(MessageResource.class.getName());
 
     /**
      * Produce a pong message string.
@@ -25,7 +26,7 @@ public class MessageResource {
     @Path("ping")
     @Produces(MediaType.TEXT_PLAIN)
     public String ping() {
-        System.out.println("RESTful Service 'message' is running ==> ping");
+        LOG.debug("RESTful Service 'message' is running ==> ping");
         return "Pong on " + new Date().toString();
     }
 

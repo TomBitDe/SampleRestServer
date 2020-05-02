@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.ServerConfiguration;
 import org.glassfish.grizzly.http.server.accesslog.AccessLogBuilder;
@@ -15,7 +16,7 @@ import org.glassfish.jersey.server.ResourceConfig;
  * Use the Grizzly http server to handle REST calls.
  */
 public class RestServer {
-    private static final Logger LOG = Logger.getLogger(RestServer.class.getName());
+    private static final Logger LOG = LogManager.getLogger(RestServer.class.getName());
 
     private static final String BASE_URI;
     private static final String PROTOCOL;
