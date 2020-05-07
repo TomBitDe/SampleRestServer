@@ -26,6 +26,12 @@ public class Credential implements Serializable {
         this.pinCode = -1;
     }
 
+    /**
+     * Create a credential with the given nickname and pin code.
+     *
+     * @param nickName the nickname
+     * @param pinCode  the pin code
+     */
     public Credential(String nickName, int pinCode) {
         this.nickName = nickName;
         this.pinCode = pinCode;
@@ -34,13 +40,18 @@ public class Credential implements Serializable {
     /**
      * The annotation must be placed here, not at the private declaration position.
      *
-     * @return the nick name
+     * @return the nickname
      */
     @XmlElement
     public String getNickName() {
         return nickName;
     }
 
+    /**
+     * Set the nickname.
+     *
+     * @param nickName the nickname to assign
+     */
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
@@ -55,6 +66,11 @@ public class Credential implements Serializable {
         return pinCode;
     }
 
+    /**
+     * Set the pin code for this credential.
+     *
+     * @param pinCode the pin code to assign
+     */
     public void setPinCode(int pinCode) {
         this.pinCode = pinCode;
     }
