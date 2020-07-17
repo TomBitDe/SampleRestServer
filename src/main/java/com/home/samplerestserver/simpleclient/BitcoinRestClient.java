@@ -4,9 +4,7 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 
 /**
- * JSON-REST-Client fuer den Bitcoin-Kurs, Powered by CoinDesk, null {@link "http://www.coindesk.com/api/"}
- * {@link "http://www.coindesk.com/price/"}
- * {@link "http://api.coindesk.com/v1/bpi/currentprice.json"}
+ * JSON-REST-Client fuer den Bitcoin-Kurs, Powered by CoinDesk
  */
 public class BitcoinRestClient {
 

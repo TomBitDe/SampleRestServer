@@ -38,19 +38,6 @@ public class MainEntry {
     public static native String kwsrcvrcv(String inBuffer);
 
     /**
-     * A sample native C call to create a PLOG message.
-     *
-     * @param plms
-     * @param domn
-     * @param phbl
-     * @param mandant
-     * @param refNo
-     * @param idx
-     * @param paramsdomn
-     */
-    public static native void kwsrcvplog(String plms, String domn, String phbl, String mandant, long refNo, int idx, String paramsdomn);
-
-    /**
      * Called by native module to start and publish the RestServices.
      * <p>
      * Start the logfile watchdog here.<br>

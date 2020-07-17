@@ -1,4 +1,4 @@
 /**
- * A simple REST client for testing.
+ * Simple REST clients for testing.
  */
 package com.home.samplerestserver.simpleclient;
