@@ -39,12 +39,13 @@ public class RestServer {
      */
     private RestServer() {
     }
-    
+
     /**
      * It's not allowed to clone.
-     * 
+     *
      * @return newer return an Object
-     * @throws CloneNotSupportedException always throw it 
+     *
+     * @throws CloneNotSupportedException always throw it
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
