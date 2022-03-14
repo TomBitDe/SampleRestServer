@@ -56,7 +56,7 @@ public class MessageResourceTest {
     }
 
     /**
-     * No method test tesr down needed until now.
+     * No method test tear down needed until now.
      */
     @After
     public void tearDown() {
