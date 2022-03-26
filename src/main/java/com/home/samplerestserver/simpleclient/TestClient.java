@@ -53,25 +53,25 @@ public class TestClient {
         System.out.println(response);
         System.out.println(CALL_SEPARATOR);
 
-        webTarget = client.target(REST_MESSAGE_URL).path("xmlserverinfo");
-        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        ServerInfo serverInfo = invocationBuilder.get(ServerInfo.class);
         try {
+            webTarget = client.target(REST_MESSAGE_URL).path("xmlserverinfo");
+            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            ServerInfo serverInfo = invocationBuilder.get(ServerInfo.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(ServerInfo.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(serverInfo, System.out);
             System.out.println(serverInfo.getServer());
-        }
+        } 
         catch (JAXBException jbex) {
             System.err.println(jbex);
         }
         System.out.println(CALL_SEPARATOR);
 
-        webTarget = client.target(REST_MESSAGE_URL).path("credential");
-        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        Credential credential = invocationBuilder.get(Credential.class);
         try {
+            webTarget = client.target(REST_MESSAGE_URL).path("credential");
+            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            Credential credential = invocationBuilder.get(Credential.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(Credential.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -83,10 +83,10 @@ public class TestClient {
         }
         System.out.println(CALL_SEPARATOR);
 
-        webTarget = client.target(REST_MESSAGE_URL).path("userinfo");
-        invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        UserInfo userInfo = invocationBuilder.get(UserInfo.class);
         try {
+            webTarget = client.target(REST_MESSAGE_URL).path("userinfo");
+            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            UserInfo userInfo = invocationBuilder.get(UserInfo.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(UserInfo.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
