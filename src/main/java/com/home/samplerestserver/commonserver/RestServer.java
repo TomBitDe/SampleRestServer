@@ -3,7 +3,6 @@ package com.home.samplerestserver.commonserver;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -15,21 +14,23 @@ import org.glassfish.jersey.server.ResourceConfig;
 /**
  * Use the Grizzly http server to handle REST calls.
  */
-public class RestServer {
+public class RestServer implements RestServerMBean {
     private static final Logger LOG = LogManager.getLogger(RestServer.class.getName());
 
-    private static final String BASE_URI;
+    private static final String HOST_DEFAULT = "localhost";
+    private static final String PORT_DEFAULT = "8080";
     private static final String PROTOCOL;
-    private static final Optional<String> HOST;
     private static final String PATH;
-    private static final Optional<String> PORT;
+    private static String baseURI;
+    private static String host;
+    private static String port;
+    
+    private static boolean running;
 
     static {
         PROTOCOL = "http://";
-        HOST = Optional.ofNullable(System.getenv("HOSTNAME"));
-        PORT = Optional.ofNullable(System.getenv("PORT"));
         PATH = "rest";
-        BASE_URI = PROTOCOL + HOST.orElse("localhost") + ":" + PORT.orElse("8080") + "/" + PATH + "/";
+        running = false;
     }
 
     private static HttpServer httpServer = null;
@@ -37,7 +38,15 @@ public class RestServer {
     /**
      * It's not allowed to create an instance.
      */
-    private RestServer() {
+    public RestServer() {
+        host = System.getenv("HOSTNAME");
+        if (host == null) host = HOST_DEFAULT;
+        
+        port = System.getenv("PORT");
+        if (port == null) port = PORT_DEFAULT;
+        
+        baseURI = PROTOCOL 
+                + host + ":" + port + "/" + PATH + "/";
     }
 
     /**
@@ -57,24 +66,34 @@ public class RestServer {
      *
      * @return true in any case so far
      */
-    public static boolean startServices() {
+    @Override
+    public boolean startServices() {
         LOG.info("Enter startServices");
 
         try {
+            running = false;
+            
             if (httpServer == null) {
-                ResourceConfig rc = new ResourceConfig().packages("com.home.samplerestserver.commonserver").property("jersey.config.server.tracing.type ", "ALL");
-                httpServer = GrizzlyHttpServerFactory.createHttpServer(new URI(BASE_URI), rc);
+                baseURI = PROTOCOL + getHost() + ":" + getPort() + "/" + PATH + "/";
+                
+                ResourceConfig rc = new ResourceConfig()
+                        .packages("com.home.samplerestserver.commonserver")
+                        .property("jersey.config.server.tracing.type ", "ALL");
+                httpServer = GrizzlyHttpServerFactory
+                        .createHttpServer(new URI(baseURI), rc);
                 ServerConfiguration serverConfiguration = httpServer.getServerConfiguration();
 
                 final AccessLogBuilder builder = new AccessLogBuilder("./logs/access.log");
                 builder.instrument(serverConfiguration);
 
                 httpServer.start();
-                LOG.info("Jersey app started with WADL available at " + BASE_URI + "application.wadl");
+                LOG.info("Jersey app started with WADL available at " + baseURI + "application.wadl");
             }
             else {
                 LOG.info("Services already running. No need to start again");
             }
+            
+            running = true;
         }
         catch (URISyntaxException | IOException ex) {
             LOG.error("StartServices failed: " + ex.getMessage());
@@ -88,7 +107,8 @@ public class RestServer {
      *
      * @return true in any case so far
      */
-    public static boolean stopServices() {
+    @Override
+    public boolean stopServices() {
         LOG.info("Enter stopServices");
 
         if (httpServer != null) {
@@ -99,7 +119,31 @@ public class RestServer {
         else {
             LOG.info("Http server already stopped. No need to stop again");
         }
+        running = false;
 
         return true;
+    }
+    
+    @Override
+    public String getHost() {
+        return host;
+    }
+    @Override
+    public void setHost(String host) {
+        RestServer.host = host;
+    }
+
+    @Override
+    public String getPort() {
+        return port;
+    }
+    @Override
+    public void setPort(String port) {
+        RestServer.port = port;
+    }
+    
+    @Override
+    public boolean getRunning() {
+        return running;
     }
 }

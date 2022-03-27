@@ -74,7 +74,7 @@ public class MainEntryTest {
      * Test of main method, of class MainEntry.
      */
     @Test
-    public void testMain() {
+    public void testMain() throws Exception {
         System.out.println("main");
         String[] args = null;
         MainEntry.main(args);

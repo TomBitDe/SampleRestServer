@@ -11,6 +11,7 @@ import org.junit.Test;
  * Unit tests for RestServer.
  */
 public class RestServerTest {
+    private static RestServer restServer;
 
     /**
      * No need to put some code in the constructor until now.
@@ -23,6 +24,7 @@ public class RestServerTest {
      */
     @BeforeClass
     public static void setUpClass() {
+        restServer = new RestServer();
     }
 
     /**
@@ -52,8 +54,8 @@ public class RestServerTest {
     @Test
     public void testStartServices() {
         System.out.println("startServices");
-        Assert.assertTrue(RestServer.startServices());
-        Assert.assertTrue(RestServer.startServices());
+        Assert.assertTrue(restServer.startServices());
+        Assert.assertTrue(restServer.startServices());
     }
 
     /**
@@ -62,7 +64,7 @@ public class RestServerTest {
     @Test
     public void testStopServices() {
         System.out.println("stopServices");
-        Assert.assertTrue(RestServer.stopServices());
-        Assert.assertTrue(RestServer.stopServices());
+        Assert.assertTrue(restServer.stopServices());
+        Assert.assertTrue(restServer.stopServices());
     }
 }

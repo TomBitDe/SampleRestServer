@@ -1,5 +1,8 @@
 package com.home.samplerestserver.commonserver;
 
+import java.lang.management.ManagementFactory;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,8 +13,8 @@ import org.apache.logging.log4j.Logger;
  * Provide methods startWS() and stopWS() that can be called from the C environment.<br>
  * The main method is the starter if not running in the C environment.<br>
  */
-public class MainEntry {
-    private static final Logger LOG = LogManager.getLogger(MainEntry.class.getName());
+public class MBeanMainEntry {
+    private static final Logger LOG = LogManager.getLogger(MBeanMainEntry.class.getName());
 
     /**
      * Used for global synchronization, if needed.
@@ -39,7 +42,7 @@ public class MainEntry {
 
     private static RestServer restServer = null;
     
-    public MainEntry() {
+    public MBeanMainEntry() {
         if (restServer == null) {
             restServer = new RestServer();
         }
@@ -97,11 +100,23 @@ public class MainEntry {
     public static void main(String[] args) throws Exception {
         standAloneMode = true;
 
-        // Create the RestServer
+        // Get the Platform MBean Server
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        // Construct the ObjectName for the Hello MBean we will register
+        ObjectName mbeanName = new ObjectName("GrizzlyRestServer:type=RestServer");
+
+        // Create the RestServer MBean
         if (restServer == null) {
             restServer = new RestServer();
         }
 
+        // Register the RestServer MBean
+        mbs.registerMBean(restServer, mbeanName);
+
         startWS();
+        
+        LOG.info("Waiting for incoming requests...");
+        Thread.sleep(Long.MAX_VALUE);
     }
 }
