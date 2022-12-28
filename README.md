@@ -4,4 +4,4 @@ A sample REST server to do REST tests. Client is integrated. Currently the follo
 - APPLICATION_XML
 - APPLICATION_JSON
 
-Grizzly HTTP Server is used. Netbeans 8.2 maven project.
+Grizzly HTTP Server is used. Netbeans 8.2 maven project. JDK 1.8 is a must.
