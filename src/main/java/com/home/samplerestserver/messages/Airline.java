@@ -99,15 +99,12 @@ public class Airline implements Serializable {
         if (!Objects.equals(this.airlineCode, other.airlineCode)) {
             return false;
         }
-        if (!Objects.equals(this.airlineName, other.airlineName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.airlineName, other.airlineName);
     }
 
-   /**
-    * {@inheritDoc}
-    */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "Airline{" + "airlineCode=" + airlineCode + ", airlineName=" + airlineName + '}';

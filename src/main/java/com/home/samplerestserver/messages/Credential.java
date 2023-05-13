@@ -104,15 +104,12 @@ public class Credential implements Serializable {
         if (this.pinCode != other.pinCode) {
             return false;
         }
-        if (!Objects.equals(this.nickName, other.nickName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.nickName, other.nickName);
     }
 
-   /**
-    * {@inheritDoc}
-    */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "Credential{" + "nickName=" + nickName + ", pinCode=" + pinCode + '}';

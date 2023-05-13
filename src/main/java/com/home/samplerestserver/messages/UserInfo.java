@@ -113,15 +113,12 @@ public class UserInfo implements Serializable {
         if (!Objects.equals(this.userName, other.userName)) {
             return false;
         }
-        if (!Objects.equals(this.credential, other.credential)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.credential, other.credential);
     }
 
-   /**
-    * {@inheritDoc}
-    */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "UserInfo{" + "userName=" + userName + ", credential=" + credential + '}';
