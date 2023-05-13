@@ -72,6 +72,8 @@ public class MainEntryTest {
 
     /**
      * Test of main method, of class MainEntry.
+     * 
+     * @throws Exception in case of any exception
      */
     @Test
     public void testMain() throws Exception {

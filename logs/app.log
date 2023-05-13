@@ -1,0 +1,30 @@
+2023-05-13 09:49:53.918 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - --> main
+2023-05-13 09:49:53.924 [DEBUG] [main] com.home.samplerestserver.commonserver.MainEntry - standAloneMode=true
+2023-05-13 09:49:53.928 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - --> RestServer
+2023-05-13 09:49:53.929 [INFO ] [main] com.home.samplerestserver.commonserver.RestServer - baseURI = http://localhost:8080/rest/
+2023-05-13 09:49:53.929 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - <-- RestServer
+2023-05-13 09:49:53.929 [INFO ] [main] com.home.samplerestserver.commonserver.MainEntry - Enter startWS
+2023-05-13 09:49:53.931 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - --> startServices
+2023-05-13 09:49:56.185 [INFO ] [main] com.home.samplerestserver.commonserver.RestServer - Jersey app started with WADL available at http://localhost:8080/rest/application.wadl
+2023-05-13 09:49:56.185 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - <-- startServices
+2023-05-13 09:49:56.186 [INFO ] [main] com.home.samplerestserver.commonserver.MainEntry - Leave startWS
+2023-05-13 09:49:56.186 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - <-- main
+2023-05-13 09:54:31.548 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - --> main
+2023-05-13 09:54:31.558 [DEBUG] [main] com.home.samplerestserver.commonserver.MainEntry - standAloneMode = true
+2023-05-13 09:54:31.562 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - --> RestServer
+2023-05-13 09:54:31.563 [INFO ] [main] com.home.samplerestserver.commonserver.RestServer - baseURI = http://localhost:8080/rest/
+2023-05-13 09:54:31.563 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - <-- RestServer
+2023-05-13 09:54:31.563 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - --> startWS
+2023-05-13 09:54:31.565 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - --> startServices
+2023-05-13 09:54:34.256 [INFO ] [main] com.home.samplerestserver.commonserver.RestServer - Jersey app started with WADL available at http://localhost:8080/rest/application.wadl
+2023-05-13 09:54:34.257 [TRACE] [main] com.home.samplerestserver.commonserver.RestServer - <-- startServices
+2023-05-13 09:54:34.257 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - <-- startWS
+2023-05-13 09:54:34.258 [TRACE] [main] com.home.samplerestserver.commonserver.MainEntry - <-- main
+2023-05-13 09:58:04.029 [DEBUG] [grizzly-http-server-2] com.home.samplerestserver.commonserver.MessageResource - Return [Yea! ]
+2023-05-13 09:58:04.064 [DEBUG] [grizzly-http-server-3] com.home.samplerestserver.commonserver.MessageResource - RESTful Service 'message' is running ==> ping
+2023-05-13 09:58:04.074 [DEBUG] [grizzly-http-server-4] com.home.samplerestserver.commonserver.MessageResource - Return [Windows 10 10.0]
+2023-05-13 09:58:04.083 [DEBUG] [grizzly-http-server-5] com.home.samplerestserver.commonserver.MessageResource - Return [Windows 10 10.0]
+2023-05-13 09:58:04.460 [DEBUG] [grizzly-http-server-6] com.home.samplerestserver.commonserver.MessageResource - Credential{nickName=Dummy01, pinCode=1234}
+2023-05-13 09:58:04.480 [DEBUG] [grizzly-http-server-7] com.home.samplerestserver.commonserver.MessageResource - UserInfo{userName=Hans, credential=Credential{nickName=Dummy01, pinCode=1234}}
+2023-05-13 09:58:04.500 [DEBUG] [grizzly-http-server-8] com.home.samplerestserver.commonserver.MessageResource - Airline{airlineCode=EW, airlineName=EuroWings}
+2023-05-13 09:58:05.987 [DEBUG] [grizzly-http-server-9] com.home.samplerestserver.commonserver.MessageResource - Return [GET]

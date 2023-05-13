@@ -39,6 +39,7 @@ public class RestServer implements RestServerMBean {
      * It's not allowed to create an instance.
      */
     public RestServer() {
+        LOG.trace("--> RestServer");
         host = System.getenv("HOSTNAME");
         if (host == null) host = HOST_DEFAULT;
         
@@ -47,6 +48,9 @@ public class RestServer implements RestServerMBean {
         
         baseURI = PROTOCOL 
                 + host + ":" + port + "/" + PATH + "/";
+        LOG.info("baseURI = {}", baseURI);
+        
+        LOG.trace("<-- RestServer");
     }
 
     /**
@@ -68,7 +72,7 @@ public class RestServer implements RestServerMBean {
      */
     @Override
     public boolean startServices() {
-        LOG.info("Enter startServices");
+        LOG.trace("--> startServices");
 
         try {
             running = false;
@@ -99,6 +103,8 @@ public class RestServer implements RestServerMBean {
             LOG.error("StartServices failed: " + ex.getMessage());
             return false;
         }
+        LOG.trace("<-- startServices");
+
         return true;
     }
 
@@ -109,7 +115,7 @@ public class RestServer implements RestServerMBean {
      */
     @Override
     public boolean stopServices() {
-        LOG.info("Enter stopServices");
+        LOG.trace("--> stopServices");
 
         if (httpServer != null) {
             httpServer.shutdownNow();
@@ -120,6 +126,8 @@ public class RestServer implements RestServerMBean {
             LOG.info("Http server already stopped. No need to stop again");
         }
         running = false;
+        
+        LOG.trace("<-- stopServices");
 
         return true;
     }

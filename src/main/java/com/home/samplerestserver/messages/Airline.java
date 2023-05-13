@@ -70,6 +70,9 @@ public class Airline implements Serializable {
         this.airlineName = airlineName;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -78,6 +81,9 @@ public class Airline implements Serializable {
         return hash;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -99,6 +105,9 @@ public class Airline implements Serializable {
         return true;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public String toString() {
         return "Airline{" + "airlineCode=" + airlineCode + ", airlineName=" + airlineName + '}';

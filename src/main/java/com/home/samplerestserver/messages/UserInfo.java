@@ -84,6 +84,9 @@ public class UserInfo implements Serializable {
         this.credential = credential;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -92,6 +95,9 @@ public class UserInfo implements Serializable {
         return hash;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -113,6 +119,9 @@ public class UserInfo implements Serializable {
         return true;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public String toString() {
         return "UserInfo{" + "userName=" + userName + ", credential=" + credential + '}';

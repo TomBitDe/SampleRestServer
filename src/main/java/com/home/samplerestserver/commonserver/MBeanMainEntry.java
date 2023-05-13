@@ -42,10 +42,17 @@ public class MBeanMainEntry {
 
     private static RestServer restServer = null;
     
+    /**
+     * MBean runner entry.
+     */
     public MBeanMainEntry() {
+        LOG.trace("--> MBeanMainEntry");
+
         if (restServer == null) {
             restServer = new RestServer();
         }
+
+        LOG.trace("<-- MBeanMainEntry");
     }
     
     /**
@@ -56,7 +63,7 @@ public class MBeanMainEntry {
      * @return false in any error case else true
      */
     public static boolean startWS() {
-        LOG.info("Enter startWS");
+        LOG.trace("--> startWS");
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
 
         try {
@@ -66,7 +73,7 @@ public class MBeanMainEntry {
             LOG.error(e, e);
         }
         finally {
-            LOG.info("Leave startWS");
+            LOG.trace("<-- startWS");
         }
         return false;
     }
@@ -77,7 +84,8 @@ public class MBeanMainEntry {
      * @return false in any error case else true
      */
     public static boolean stopWS() {
-        LOG.info("Enter stopWS");
+        LOG.trace("--> stopWS");
+
         try {
             return restServer.stopServices();
         }
@@ -85,8 +93,9 @@ public class MBeanMainEntry {
             LOG.error(e, e);
         }
         finally {
-            LOG.info("Leave stopWS");
+            LOG.trace("<-- stopWS");
         }
+
         return false;
     }
 
@@ -96,9 +105,14 @@ public class MBeanMainEntry {
      * Set the standAloneMode true because this is not running in a TSW enviroment.
      *
      * @param args the command line arguments
+     * 
+     * @throws Exception any kind of exception
      */
     public static void main(String[] args) throws Exception {
+        LOG.trace("--> main");
+        
         standAloneMode = true;
+        LOG.debug("standAloneMode = {}", standAloneMode);
 
         // Get the Platform MBean Server
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -118,5 +132,7 @@ public class MBeanMainEntry {
         
         LOG.info("Waiting for incoming requests...");
         Thread.sleep(Long.MAX_VALUE);
+        
+        LOG.trace("<-- main");
     }
 }

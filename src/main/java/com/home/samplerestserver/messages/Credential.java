@@ -75,6 +75,9 @@ public class Credential implements Serializable {
         this.pinCode = pinCode;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -83,6 +86,9 @@ public class Credential implements Serializable {
         return hash;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -104,6 +110,9 @@ public class Credential implements Serializable {
         return true;
     }
 
+   /**
+    * {@inheritDoc}
+    */
     @Override
     public String toString() {
         return "Credential{" + "nickName=" + nickName + ", pinCode=" + pinCode + '}';

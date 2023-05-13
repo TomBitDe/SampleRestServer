@@ -39,6 +39,9 @@ public class MainEntry {
 
     private static RestServer restServer = null;
     
+    /**
+     * Runner entry.
+     */
     public MainEntry() {
         if (restServer == null) {
             restServer = new RestServer();
@@ -53,7 +56,7 @@ public class MainEntry {
      * @return false in any error case else true
      */
     public static boolean startWS() {
-        LOG.info("Enter startWS");
+        LOG.trace("--> startWS");
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
 
         try {
@@ -63,7 +66,7 @@ public class MainEntry {
             LOG.error(e, e);
         }
         finally {
-            LOG.info("Leave startWS");
+            LOG.trace("<-- startWS");
         }
         return false;
     }
@@ -93,9 +96,14 @@ public class MainEntry {
      * Set the standAloneMode true because this is not running in a TSW enviroment.
      *
      * @param args the command line arguments
+     * 
+     * @throws Exception any kind of exception 
      */
     public static void main(String[] args) throws Exception {
+        LOG.trace("--> main");
+        
         standAloneMode = true;
+        LOG.debug("standAloneMode = {}", standAloneMode);
 
         // Create the RestServer
         if (restServer == null) {
@@ -103,5 +111,6 @@ public class MainEntry {
         }
 
         startWS();
+        LOG.trace("<-- main");
     }
 }
