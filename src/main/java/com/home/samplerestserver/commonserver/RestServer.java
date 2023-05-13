@@ -62,6 +62,7 @@ public class RestServer implements RestServerMBean {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
+        super.clone();
         throw new CloneNotSupportedException();
     }
 
