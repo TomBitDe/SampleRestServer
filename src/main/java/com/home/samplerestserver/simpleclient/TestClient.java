@@ -138,28 +138,27 @@ public class TestClient {
     }
     
     public static void jsonAirline() {
-        Airline airline = new Airline("EW", "EuroWings");
-        
         Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
         
         Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
                 .path("jsonairline")
                 .request(MediaType.APPLICATION_JSON);
         
+        Airline airline = new Airline("EW", "EuroWings");
+        
         Airline response = invocationBuilder.post(
                 Entity.entity(airline, MediaType.APPLICATION_JSON), Airline.class);
-        
 
-            try {
-                ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-                String airlineJson = mapper.writeValueAsString(response);
-                System.out.println(airlineJson);
-            }
-            catch (JsonProcessingException jpex) {
-                System.err.println("ERROR: " + jpex);
-            }
+        try {
+            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            String airlineJson = mapper.writeValueAsString(response);
+            System.out.println(airlineJson);
+        }
+        catch (JsonProcessingException jpex) {
+            System.err.println("ERROR: " + jpex);
+        }
 
-            System.out.println(airline.toString());
+        System.out.println(airline.toString());
         
         System.out.println(CALL_SEPARATOR);
     }
