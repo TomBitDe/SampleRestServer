@@ -142,8 +142,7 @@ public class TestClient {
         
         Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
         
-        Invocation.Builder invocationBuilder = client.target("http://localhost:8080/rest/")
-                .path("message")
+        Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
                 .path("jsonairline")
                 .request(MediaType.APPLICATION_JSON);
         
@@ -168,8 +167,7 @@ public class TestClient {
     public static void jsonAirlineInfo() {
         Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
         
-        Response resp = client.target("http://localhost:8080/rest/")
-                .path("message")
+        Response resp = client.target(REST_MESSAGE_URL)
                 .path("jsonairlineinfo")
                 .request(MediaType.APPLICATION_JSON)
                 .get();
