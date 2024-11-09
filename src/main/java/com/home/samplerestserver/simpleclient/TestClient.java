@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.home.samplerestserver.messages.Airline;
+import com.home.samplerestserver.messages.AirlineInfo;
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.home.samplerestserver.messages.UserInfo;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -34,28 +36,58 @@ public class TestClient {
      * @param args the starter arguments
      */
     public static void main(String[] args) {
+        
+        simple();
+
+        ping();
+        
+        serverInfo();
+
+        xmlServerInfo();
+
+        credential();
+        
+        userInfo();
+        
+        jsonAirline();
+        
+        jsonAirlineInfo();
+
+        options();
+    }
+    
+    public static void simple() {
         Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("simple");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
         System.out.println(response);
         System.out.println(CALL_SEPARATOR);
-
-        webTarget = client.target(REST_MESSAGE_URL).path("ping");
-        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-        response = invocationBuilder.get(String.class);
+    }
+    
+    public static void ping() {
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        WebTarget webTarget = client.target(REST_MESSAGE_URL).path("ping");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        String response = invocationBuilder.get(String.class);
         System.out.println(response);
         System.out.println(CALL_SEPARATOR);
-
-        webTarget = client.target(REST_MESSAGE_URL).path("serverinfo");
-        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-        response = invocationBuilder.get(String.class);
+    }
+    
+    public static void serverInfo() {
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        WebTarget webTarget = client.target(REST_MESSAGE_URL).path("serverinfo");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        String response = invocationBuilder.get(String.class);
         System.out.println(response);
         System.out.println(CALL_SEPARATOR);
-
+    }
+    
+    public static void xmlServerInfo() {
         try {
-            webTarget = client.target(REST_MESSAGE_URL).path("xmlserverinfo");
-            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("xmlserverinfo");
+            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
             ServerInfo serverInfo = invocationBuilder.get(ServerInfo.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(ServerInfo.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -66,11 +98,14 @@ public class TestClient {
         catch (JAXBException jbex) {
             System.err.println(jbex);
         }
-        System.out.println(CALL_SEPARATOR);
-
+        System.out.println(CALL_SEPARATOR); 
+    }
+    
+    public static void credential() {
         try {
-            webTarget = client.target(REST_MESSAGE_URL).path("credential");
-            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("credential");
+            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
             Credential credential = invocationBuilder.get(Credential.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(Credential.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -82,10 +117,13 @@ public class TestClient {
             System.err.println(jbex);
         }
         System.out.println(CALL_SEPARATOR);
-
+    }
+    
+    public static void userInfo() {
         try {
-            webTarget = client.target(REST_MESSAGE_URL).path("userinfo");
-            invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
+            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("userinfo");
+            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
             UserInfo userInfo = invocationBuilder.get(UserInfo.class);
             JAXBContext jaxbContext = JAXBContext.newInstance(UserInfo.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -97,7 +135,39 @@ public class TestClient {
             System.err.println(jbex);
         }
         System.out.println(CALL_SEPARATOR);
+    }
+    
+    public static void jsonAirline() {
+        Airline airline = new Airline("EW", "EuroWings");
+        
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        
+        Invocation.Builder invocationBuilder = client.target("http://localhost:8080/rest/")
+                .path("message")
+                .path("jsonairline")
+                .request(MediaType.APPLICATION_JSON);
+        
+        Airline response = invocationBuilder.post(
+                Entity.entity(airline, MediaType.APPLICATION_JSON), Airline.class);
+        
 
+            try {
+                ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+                String airlineJson = mapper.writeValueAsString(response);
+                System.out.println(airlineJson);
+            }
+            catch (JsonProcessingException jpex) {
+                System.err.println("ERROR: " + jpex);
+            }
+
+            System.out.println(airline.toString());
+        
+        System.out.println(CALL_SEPARATOR);
+    }
+    
+    public static void jsonAirlineInfo() {
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        
         Response resp = client.target("http://localhost:8080/rest/")
                 .path("message")
                 .path("jsonairlineinfo")
@@ -110,24 +180,27 @@ public class TestClient {
             System.err.println(msg);
         }
         else {
-            Airline airline = resp.readEntity(Airline.class);
+            AirlineInfo airlineInfo = resp.readEntity(AirlineInfo.class);
 
             try {
                 ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-                String airlineJson = mapper.writeValueAsString(airline);
+                String airlineJson = mapper.writeValueAsString(airlineInfo);
                 System.out.println(airlineJson);
             }
             catch (JsonProcessingException jpex) {
                 System.err.println("ERROR: " + jpex);
             }
 
-            System.out.println(airline.toString());
+            System.out.println(airlineInfo.toString());
         }
         System.out.println(CALL_SEPARATOR);
-
-        webTarget = client.target(REST_MESSAGE_URL);
-        invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-        response = invocationBuilder.options(String.class);
+    }
+    
+    public static void options() {
+        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        WebTarget webTarget = client.target(REST_MESSAGE_URL);
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        String response = invocationBuilder.options(String.class);
         System.out.println(response);
         System.out.println(CALL_SEPARATOR);
     }

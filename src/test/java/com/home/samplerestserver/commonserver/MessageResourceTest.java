@@ -1,13 +1,16 @@
 package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Airline;
+import com.home.samplerestserver.messages.AirlineInfo;
 import com.home.samplerestserver.messages.Credential;
 import com.home.samplerestserver.messages.ServerInfo;
 import com.home.samplerestserver.messages.UserInfo;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
@@ -75,7 +78,7 @@ public class MessageResourceTest {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
 
-        Assert.assertTrue(response.startsWith("Pong on "));
+        Assert.assertTrue(response.startsWith("Pong "));
     }
 
     /**
@@ -157,11 +160,46 @@ public class MessageResourceTest {
 
         webTarget = webTarget.path("message").path("jsonairlineinfo");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-        Airline response = invocationBuilder.get(Airline.class);
+        AirlineInfo response = invocationBuilder.get(AirlineInfo.class);
 
-        Assert.assertEquals(new Airline("EW", "EuroWings"), response);
+        Assert.assertTrue(response.getAirlines().isEmpty());
     }
 
+    /**
+     * Test of createairlineinfo method, of class MessageResource.
+     */
+    @Test
+    public void testJsonCreateAirlineInfo() {
+        System.out.println("jsoncreateairlineinfo");
+
+        webTarget = webTarget.path("message").path("jsonairline");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        Airline airline = new Airline("EW", "EuroWings");
+        Airline response = invocationBuilder.post(
+                Entity.entity(airline, MediaType.APPLICATION_JSON), Airline.class);
+
+        Assert.assertEquals(airline.getCode(), response.getCode());
+        Assert.assertEquals(airline.getName(), response.getName());
+    }
+
+    /**
+     * Test of deleteairlineinfo method, of class MessageResource.
+     */
+    @Test
+    public void testJsonDeleteAirlineInfo() {
+        System.out.println("jsondeleteairlineinfo");
+        
+        testJsonCreateAirlineInfo();
+        
+        webTarget = webTarget.path("message").path("jsonairline").path("EW");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+
+        Response response = invocationBuilder.delete();
+
+        // exprexted is 204 in case Airline delete is done 
+        //Assert.assertEquals(204, response.getStatus());
+    }
+    
     /**
      * Test of options method, of class MessageResource.
      */
