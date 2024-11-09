@@ -5,4 +5,5 @@ A sample REST server to do REST tests. Client is integrated. Currently the follo
 - APPLICATION_JSON
 
 Grizzly HTTP Server is used. Netbeans 16 maven project. JDK 1.8 is a must.
+
 Now Netbeans 22, still maven. JDK 21 is required.
