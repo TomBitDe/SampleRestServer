@@ -1,12 +1,17 @@
 package com.home.samplerestserver.simpleclient;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+
 
 /**
  * JSON-REST-Client fuer den Bitcoin-Kurs, Powered by CoinDesk
  */
 public class BitcoinRestClient {
+    private static final Logger LOG = Logger.getLogger(BitcoinRestClient.class.getName());
+    
 
     /**
      * Start the BitcoinRestClient.
@@ -17,28 +22,28 @@ public class BitcoinRestClient {
         final String url = "http://api.coindesk.com/v1/bpi/currentprice.json";
         JsonObject jsonObj = JsonObjectFromUrlUtil.getJsonObjectFromUrl(url);
 
-        System.out.println("\n\n------------ Ausgabe aller Root-Key/Values:\n");
-        jsonObj.entrySet().forEach(e -> System.out.println("key=" + e.getKey() + ", val=" + e.getValue() + "\n"));
+        LOG.info("\n\n------------ Ausgabe aller Root-Key/Values:\n");
+        jsonObj.entrySet().forEach(e -> LOG.log(Level.INFO, "key={0}, val={1}\n", new Object[]{e.getKey(), e.getValue()}));
 
-        System.out.println("\n------------ Ausgabe aller Key/Values zu 'time':\n");
+        LOG.info("\n------------ Ausgabe aller Key/Values zu 'time':\n");
         JsonObject time = jsonObj.getJsonObject("time");
-        time.entrySet().forEach(e -> System.out.println("key=" + e.getKey() + ", val=" + e.getValue() + "\n"));
+        time.entrySet().forEach(e -> LOG.log(Level.INFO, "key={0}, val={1}\n", new Object[]{e.getKey(), e.getValue()}));
 
-        System.out.println("\n------------ Ausgabe aller Key/Values zu 'bpi':\n");
+        LOG.info("\n------------ Ausgabe aller Key/Values zu 'bpi':\n");
         JsonObject bpi = jsonObj.getJsonObject("bpi");
-        bpi.entrySet().forEach(e -> System.out.println("key=" + e.getKey() + ", val=" + e.getValue() + "\n"));
+        bpi.entrySet().forEach(e -> LOG.log(Level.INFO, "key={0}, val={1}\n", new Object[]{e.getKey(), e.getValue()}));
 
-        System.out.println("\n------------ Ausgabe aller Key/Values zu 'bpi.EUR':\n");
+        LOG.info("\n------------ Ausgabe aller Key/Values zu 'bpi.EUR':\n");
         JsonObject bpiEur = bpi.getJsonObject("EUR");
-        bpiEur.entrySet().forEach(e -> System.out.println("key=" + e.getKey() + ", val=" + e.getValue() + "\n"));
+        bpiEur.entrySet().forEach(e -> LOG.log(Level.INFO, "key={0}, val={1}\n", new Object[]{e.getKey(), e.getValue()}));
 
-        System.out.println("\n------------ Ermittlung einzelner Elemente:\n");
+        LOG.info("\n------------ Ermittlung einzelner Elemente:\n");
         String zeitpunkt = time.getString("updatedISO");
         String name = jsonObj.getString("chartName");
         String bpiEurCode = bpiEur.getString("code");
         JsonNumber bpiEurRate = bpiEur.getJsonNumber("rate_float");
-        System.out.println("Ein " + name + " kostet " + bpiEurRate + " " + bpiEurCode + " (" + zeitpunkt.replace('T', ' ') + ").");
+        LOG.log(Level.INFO, "Ein {0} kostet {1} {2} ({3}).", new Object[]{name, bpiEurRate, bpiEurCode, zeitpunkt.replace('T', ' ')});
 
-        System.out.println("\n-------------------------------------------------------------\n\n");
+        LOG.info("\n-------------------------------------------------------------\n\n");
     }
 }

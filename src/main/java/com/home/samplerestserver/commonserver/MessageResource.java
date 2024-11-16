@@ -2,15 +2,12 @@ package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
-import com.home.samplerestserver.messages.Credential;
-import com.home.samplerestserver.messages.ServerInfo;
-import com.home.samplerestserver.messages.UserInfo;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,55 +69,6 @@ public class MessageResource {
     }
 
     /**
-     * Produce a simple message containing server information as XML.
-     *
-     * @return the server information
-     */
-    @GET
-    @Path("xmlserverinfo")
-    @Produces(MediaType.APPLICATION_XML)
-    public ServerInfo xmlserverinfo() {
-        ServerInfo serverInfo = new ServerInfo();
-
-        serverInfo.setServer(System.getProperty("os.name") + " " + System.getProperty("os.version"));
-        LOG.debug("Return [" + serverInfo.getServer() + ']');
-
-        return serverInfo;
-    }
-
-    /**
-     * Produce a Credential message containing two elements as XML.
-     *
-     * @return the credential informations
-     */
-    @GET
-    @Path("credential")
-    @Produces(MediaType.APPLICATION_XML)
-    public Credential credential() {
-        Credential val = new Credential("Dummy01", 1234);
-
-        LOG.debug(val);
-
-        return val;
-    }
-
-    /**
-     * Produce a UserInfo message containing a complex class as XML.
-     *
-     * @return the user informations
-     */
-    @GET
-    @Path("userinfo")
-    @Produces(MediaType.APPLICATION_XML)
-    public UserInfo userinfo() {
-        UserInfo val = new UserInfo("Hans", new Credential("Dummy01", 1234));
-
-        LOG.debug(val);
-
-        return val;
-    }
-
-    /**
      * Produce a AirlineInfo message containing a complex class as JSON.
      *
      * @return the airline informations
@@ -165,7 +113,7 @@ public class MessageResource {
     }
 
     /**
-     * Produce a Airline message containing a simple class as JSON.
+     * Produce a Response message containing a simple class as JSON.
      *
      * @param code the airline code
      * @return common response
@@ -175,7 +123,7 @@ public class MessageResource {
     public Response jsonDeleteAirlineInfo(@PathParam("code") String code) {
         if (code == null || code.isEmpty()) {
             LOG.error("code=null or empty");
-            return  Response.status(Response.Status.NO_CONTENT).build();
+            return  Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
         else {
             Airline ret = memList.stream()

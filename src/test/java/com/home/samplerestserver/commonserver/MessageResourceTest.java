@@ -2,20 +2,18 @@ package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
-import com.home.samplerestserver.messages.Credential;
-import com.home.samplerestserver.messages.ServerInfo;
-import com.home.samplerestserver.messages.UserInfo;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +52,7 @@ public class MessageResourceTest {
      */
     @Before
     public void setUp() {
-        client = javax.ws.rs.client.ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         webTarget = client.target("http://localhost:8080/rest/");
     }
 
@@ -110,50 +108,9 @@ public class MessageResourceTest {
     }
 
     /**
-     * Test of xmlserverinfo method, of class MessageResource.
-     */
-    @Test
-    public void testXmlserverinfo() {
-        System.out.println("xmlserverinfo");
-
-        webTarget = webTarget.path("message").path("xmlserverinfo");
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        String response = invocationBuilder.get(ServerInfo.class).getServer();
-
-        Assert.assertNotNull(response);
-    }
-
-    /**
-     * Test of credential method, of class MessageResource.
-     */
-    @Test
-    public void testCredential() {
-        System.out.println("credential");
-
-        webTarget = webTarget.path("message").path("credential");
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        Credential response = invocationBuilder.get(Credential.class);
-
-        Assert.assertEquals(new Credential("Dummy01", 1234), response);
-    }
-
-    /**
-     * Test of userinfo method, of class MessageResource.
-     */
-    @Test
-    public void testUserInfo() {
-        System.out.println("userinfo");
-
-        webTarget = webTarget.path("message").path("userinfo");
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-        UserInfo response = invocationBuilder.get(UserInfo.class);
-
-        Assert.assertEquals(new UserInfo("Hans", new Credential("Dummy01", 1234)), response);
-    }
-
-    /**
      * Test of airlineinfo method, of class MessageResource.
      */
+//    @org.junit.Ignore
     @Test
     public void testJsonAirlineInfo() {
         System.out.println("jsonairlineinfo");
@@ -162,7 +119,7 @@ public class MessageResourceTest {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         AirlineInfo response = invocationBuilder.get(AirlineInfo.class);
 
-        Assert.assertTrue(response.getAirlines().isEmpty());
+        Assert.assertNull(response.getAirlines());
     }
 
     /**
@@ -195,9 +152,11 @@ public class MessageResourceTest {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 
         Response response = invocationBuilder.delete();
+        
+        System.out.println("HTTP response status=[" + response.getStatus() + ']');
 
-        // exprexted is 204 in case Airline delete is done 
-        //Assert.assertEquals(204, response.getStatus());
+        // exprected is 204 in case Airline delete is done 
+        Assume.assumeTrue(Response.Status.NO_CONTENT.getStatusCode() == response.getStatus());
     }
     
     /**

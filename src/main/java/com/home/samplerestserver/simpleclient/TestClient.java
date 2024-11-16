@@ -3,28 +3,25 @@ package com.home.samplerestserver.simpleclient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.home.samplerestserver.commonserver.CustomLoggingFilter;
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
-import com.home.samplerestserver.messages.Credential;
-import com.home.samplerestserver.messages.ServerInfo;
-import com.home.samplerestserver.messages.UserInfo;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import java.util.logging.Logger;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
 
 /**
  * A simple test client just to call REST here.
  */
 public class TestClient {
+    private static final Logger LOG = Logger.getLogger(TestClient.class.getName());
+    
     private static final String REST_MESSAGE_URL = "http://localhost:8080/rest/message/";
     private static final String CALL_SEPARATOR = "------------------------------------------------------------";
 
@@ -43,102 +40,45 @@ public class TestClient {
         
         serverInfo();
 
-        xmlServerInfo();
-
-        credential();
-        
-        userInfo();
-        
         jsonAirline();
         
         jsonAirlineInfo();
+        
+        jsonDeleteAirline();
 
         options();
     }
     
     public static void simple() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        ClientConfig clientConfig = new ClientConfig().register(CustomLoggingFilter.class);
+        Client client = ClientBuilder.newClient(clientConfig);
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("simple");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
-        System.out.println(response);
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(response);
+        LOG.info(CALL_SEPARATOR);
     }
     
     public static void ping() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("ping");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
-        System.out.println(response);
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(response);
+        LOG.info(CALL_SEPARATOR);
     }
     
     public static void serverInfo() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("serverinfo");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
-        System.out.println(response);
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(response);
+        LOG.info(CALL_SEPARATOR);
     }
-    
-    public static void xmlServerInfo() {
-        try {
-            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
-            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("xmlserverinfo");
-            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-            ServerInfo serverInfo = invocationBuilder.get(ServerInfo.class);
-            JAXBContext jaxbContext = JAXBContext.newInstance(ServerInfo.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.marshal(serverInfo, System.out);
-            System.out.println(serverInfo.getServer());
-        } 
-        catch (JAXBException jbex) {
-            System.err.println(jbex);
-        }
-        System.out.println(CALL_SEPARATOR); 
-    }
-    
-    public static void credential() {
-        try {
-            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
-            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("credential");
-            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-            Credential credential = invocationBuilder.get(Credential.class);
-            JAXBContext jaxbContext = JAXBContext.newInstance(Credential.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.marshal(credential, System.out);
-            System.out.println(credential);
-        }
-        catch (JAXBException jbex) {
-            System.err.println(jbex);
-        }
-        System.out.println(CALL_SEPARATOR);
-    }
-    
-    public static void userInfo() {
-        try {
-            Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
-            WebTarget webTarget = client.target(REST_MESSAGE_URL).path("userinfo");
-            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
-            UserInfo userInfo = invocationBuilder.get(UserInfo.class);
-            JAXBContext jaxbContext = JAXBContext.newInstance(UserInfo.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.marshal(userInfo, System.out);
-            System.out.println(userInfo);
-        }
-        catch (JAXBException jbex) {
-            System.err.println(jbex);
-        }
-        System.out.println(CALL_SEPARATOR);
-    }
-    
+        
     public static void jsonAirline() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         
         Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
                 .path("jsonairline")
@@ -152,19 +92,19 @@ public class TestClient {
         try {
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             String airlineJson = mapper.writeValueAsString(response);
-            System.out.println(airlineJson);
+            LOG.info(airlineJson);
         }
         catch (JsonProcessingException jpex) {
             System.err.println("ERROR: " + jpex);
         }
 
-        System.out.println(airline.toString());
+        LOG.info(airline.toString());
         
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(CALL_SEPARATOR);
     }
     
     public static void jsonAirlineInfo() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         
         Response resp = client.target(REST_MESSAGE_URL)
                 .path("jsonairlineinfo")
@@ -182,23 +122,47 @@ public class TestClient {
             try {
                 ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
                 String airlineJson = mapper.writeValueAsString(airlineInfo);
-                System.out.println(airlineJson);
+                LOG.info(airlineJson);
             }
             catch (JsonProcessingException jpex) {
                 System.err.println("ERROR: " + jpex);
             }
 
-            System.out.println(airlineInfo.toString());
+            LOG.info(airlineInfo.toString());
         }
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(CALL_SEPARATOR);
+    }
+    
+    public static void jsonDeleteAirline() {
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
+        
+        Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
+                .path("jsonairline")
+                .path("EW")
+                .request(MediaType.APPLICATION_JSON);
+        
+        Response response = invocationBuilder.delete();
+
+        try {
+            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            String reponseJson = mapper.writeValueAsString(response);
+            LOG.info(reponseJson);
+        }
+        catch (JsonProcessingException jpex) {
+            System.err.println("ERROR: " + jpex);
+        }
+
+        LOG.info("HTTP-Status: [" + response.getStatus() + "] Resonse=[" + response.toString() + ']');
+        
+        LOG.info(CALL_SEPARATOR);
     }
     
     public static void options() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(LoggingFilter.class));
+        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
         WebTarget webTarget = client.target(REST_MESSAGE_URL);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.options(String.class);
-        System.out.println(response);
-        System.out.println(CALL_SEPARATOR);
+        LOG.info(response);
+        LOG.info(CALL_SEPARATOR);
     }
 }

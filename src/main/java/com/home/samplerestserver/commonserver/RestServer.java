@@ -9,6 +9,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.ServerConfiguration;
 import org.glassfish.grizzly.http.server.accesslog.AccessLogBuilder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -83,7 +84,10 @@ public class RestServer implements RestServerMBean {
                 
                 ResourceConfig rc = new ResourceConfig()
                         .packages("com.home.samplerestserver.commonserver")
+                        .register(CustomLoggingFilter.class)
+                        .register(JacksonJsonProvider.class)
                         .property("jersey.config.server.tracing.type ", "ALL");
+                
                 httpServer = GrizzlyHttpServerFactory
                         .createHttpServer(new URI(baseURI), rc);
                 ServerConfiguration serverConfiguration = httpServer.getServerConfiguration();

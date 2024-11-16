@@ -10,8 +10,11 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Dlog4j.configurationFile=file:./conf/log4j2.xml -classpath %classpath com.home.samplerestserver.commonserver.MainEntry</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
+                <exec.vmArgs>-Dlog4j.configurationFile=file:./conf/log4j2.xml  -Djava.util.logging.config.file=./conf/mylogging.properties</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
+                <exec.mainClass>com.home.samplerestserver.commonserver.MainEntry</exec.mainClass>
             </properties>
         </action>
         <action>
@@ -24,9 +27,12 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Dlog4j.configurationFile=file:./conf/log4j2.xml -classpath %classpath com.home.samplerestserver.commonserver.MainEntry</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
+                <exec.vmArgs>-Dlog4j.configurationFile=file:./conf/log4j2.xml  -Djava.util.logging.config.file=./conf/mylogging.properties -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
+                <exec.mainClass>com.home.samplerestserver.commonserver.MainEntry</exec.mainClass>
             </properties>
         </action>
         <action>
@@ -39,8 +45,11 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Dlog4j.configurationFile=file:./conf/log4j2.xml -classpath %classpath com.home.samplerestserver.commonserver.MainEntry</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
+                <exec.vmArgs>-Dlog4j.configurationFile=file:./conf/log4j2.xml  -Djava.util.logging.config.file=./conf/mylogging.properties</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
+                <exec.mainClass>com.home.samplerestserver.commonserver.MainEntry</exec.mainClass>
             </properties>
         </action>
     </actions>
