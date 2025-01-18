@@ -120,6 +120,8 @@ public class MessageResource {
      */
     @DELETE
     @Path("jsonairline/{code}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response jsonDeleteAirlineInfo(@PathParam("code") String code) {
         if (code == null || code.isEmpty()) {
             LOG.error("code=null or empty");

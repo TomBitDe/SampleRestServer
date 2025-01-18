@@ -13,7 +13,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -110,10 +110,9 @@ public class MessageResourceTest {
     /**
      * Test of airlineinfo method, of class MessageResource.
      */
-//    @org.junit.Ignore
     @Test
     public void testJsonAirlineInfo() {
-        System.out.println("jsonairlineinfo");
+        System.out.println("jsonairlineinfo GET");
 
         webTarget = webTarget.path("message").path("jsonairlineinfo");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
@@ -127,7 +126,7 @@ public class MessageResourceTest {
      */
     @Test
     public void testJsonCreateAirlineInfo() {
-        System.out.println("jsoncreateairlineinfo");
+        System.out.println("jsoncreateairlineinfo POST");
 
         webTarget = webTarget.path("message").path("jsonairline");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
@@ -144,19 +143,18 @@ public class MessageResourceTest {
      */
     @Test
     public void testJsonDeleteAirlineInfo() {
-        System.out.println("jsondeleteairlineinfo");
-        
-        testJsonCreateAirlineInfo();
+        System.out.println("jsondeleteairlineinfo DELETE");
         
         webTarget = webTarget.path("message").path("jsonairline").path("EW");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 
-        Response response = invocationBuilder.delete();
+        Response resp = invocationBuilder.delete();
         
-        System.out.println("HTTP response status=[" + response.getStatus() + ']');
+        System.out.println("HTTP response status=[" + resp.getStatus() + ']');
 
-        // exprected is 204 in case Airline delete is done 
-        Assume.assumeTrue(Response.Status.NO_CONTENT.getStatusCode() == response.getStatus());
+        // exprected is 204 in case Airline delete is done OR 404 in case Airline not found
+        assertTrue(Response.Status.NO_CONTENT.getStatusCode() == resp.getStatus()
+        || Response.Status.NOT_FOUND.getStatusCode() == resp.getStatus());
     }
     
     /**

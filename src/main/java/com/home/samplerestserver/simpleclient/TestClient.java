@@ -13,6 +13,7 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -33,25 +34,25 @@ public class TestClient {
      * @param args the starter arguments
      */
     public static void main(String[] args) {
-        
-        simple();
-
-        ping();
-        
-        serverInfo();
-
-        jsonAirline();
-        
-        jsonAirlineInfo();
-        
-        jsonDeleteAirline();
-
-        options();
-    }
-    
-    public static void simple() {
         ClientConfig clientConfig = new ClientConfig().register(CustomLoggingFilter.class);
         Client client = ClientBuilder.newClient(clientConfig);
+        
+        simple(client);
+
+        ping(client);
+        
+        serverInfo(client);
+
+        jsonAirline(client);
+        
+        jsonAirlineInfo(client);
+        
+        jsonDeleteAirline(client);
+
+        options(client);
+    }
+    
+    public static void simple(Client client) {
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("simple");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
@@ -59,8 +60,7 @@ public class TestClient {
         LOG.info(CALL_SEPARATOR);
     }
     
-    public static void ping() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
+    public static void ping(Client client) {
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("ping");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
@@ -68,8 +68,7 @@ public class TestClient {
         LOG.info(CALL_SEPARATOR);
     }
     
-    public static void serverInfo() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
+    public static void serverInfo(Client client) {
         WebTarget webTarget = client.target(REST_MESSAGE_URL).path("serverinfo");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.get(String.class);
@@ -77,9 +76,7 @@ public class TestClient {
         LOG.info(CALL_SEPARATOR);
     }
         
-    public static void jsonAirline() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
-        
+    public static void jsonAirline(Client client) {
         Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
                 .path("jsonairline")
                 .request(MediaType.APPLICATION_JSON);
@@ -103,9 +100,7 @@ public class TestClient {
         LOG.info(CALL_SEPARATOR);
     }
     
-    public static void jsonAirlineInfo() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
-        
+    public static void jsonAirlineInfo(Client client) {
         Response resp = client.target(REST_MESSAGE_URL)
                 .path("jsonairlineinfo")
                 .request(MediaType.APPLICATION_JSON)
@@ -133,32 +128,28 @@ public class TestClient {
         LOG.info(CALL_SEPARATOR);
     }
     
-    public static void jsonDeleteAirline() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
-        
+    public static void jsonDeleteAirline(Client client) {
         Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
                 .path("jsonairline")
                 .path("EW")
                 .request(MediaType.APPLICATION_JSON);
         
         Response response = invocationBuilder.delete();
-
-        try {
-            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-            String reponseJson = mapper.writeValueAsString(response);
-            LOG.info(reponseJson);
-        }
-        catch (JsonProcessingException jpex) {
-            System.err.println("ERROR: " + jpex);
-        }
-
-        LOG.info("HTTP-Status: [" + response.getStatus() + "] Resonse=[" + response.toString() + ']');
         
+        // No JSON content expected just response; NO ObjectMapper needed
+        LOG.log(Level.INFO, "HTTP-Status: [{0}] Resonse=[{1}]", new Object[]{response.getStatus(), response.toString()});
+        
+        if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()
+         || response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
+            LOG.log(Level.INFO, "As expected: status=[{0}] reason=[{1}]",
+                    new Object[]{response.getStatus(), response.getStatusInfo()});
+        else {
+            LOG.log(Level.INFO, "Not expected: {0}", response.getStatus());            
+        }
         LOG.info(CALL_SEPARATOR);
     }
     
-    public static void options() {
-        Client client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
+    public static void options(Client client) {
         WebTarget webTarget = client.target(REST_MESSAGE_URL);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
         String response = invocationBuilder.options(String.class);
