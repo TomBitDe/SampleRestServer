@@ -1,10 +1,19 @@
 package com.home.samplerestserver.commonserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
+import com.home.samplerestserver.messages.signed.CommonResponse;
+import com.home.samplerestserver.messages.signed.WeighingRequest;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +27,9 @@ import org.apache.logging.log4j.Logger;
 public class MessageResource {
     private static final Logger LOG = LogManager.getLogger(MessageResource.class.getName());
     private static final List<Airline> memList = new ArrayList<>();
+    
+    @Context
+    private ContainerRequestContext requestContext;
     
     /**
      * Produce a pong message string.
@@ -158,4 +170,68 @@ public class MessageResource {
 
         return ret;
     }
+
+//    @POST
+//    @Path("jsonweighing")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public CommonResponse jsonWeighingRequest(WeighingRequest request) {
+//        CommonResponse ret = new CommonResponse();
+//    
+//        LOG.debug("Process WeighingRequest: " + request);
+//        
+//        return ret;
+//    }
+    
+    @POST
+    @Path("jsonweighing")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+//    public CommonResponse jsonWeighingRequest(WeighingRequest request) {
+    public CommonResponse jsonWeighingRequest(@Context ContainerRequestContext requestContext) {
+        CommonResponse ret = new CommonResponse();
+        
+//        @Context
+//        private ContainerRequestContext requestContext;
+
+        try {
+            InputStream inputStream = requestContext.getEntityStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+            StringBuilder rawData = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                rawData.append(line);
+            }
+
+            LOG.info("Raw Data: " + rawData.toString());
+
+            // JSON in WeighingRequest umwandeln
+            ObjectMapper objectMapper = new ObjectMapper();
+            WeighingRequest weighingRequest = objectMapper.readValue(rawData.toString(), WeighingRequest.class);
+
+            // WeighingRequest-Object is now available
+            LOG.info("Parsed WeighingRequest: " + weighingRequest);
+
+            // Beispiel: Daten verarbeiten
+            ret.setMessage("Weighing request received successfully");
+        }
+        catch (Exception e) {
+            LOG.error("Error reading request body", e);
+        }
+
+        return ret;
+    }
+   
+//    @POST
+//    @Path("jsonweighing")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String jsonWeighingRequest() {
+//        if (request == null) {
+//            return "HttpServletRequest is NULL!";
+//        }
+//
+//        return "Request received from: " + request.getMediaType();
+//    }
 }

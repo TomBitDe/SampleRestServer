@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.home.samplerestserver.commonserver.CustomLoggingFilter;
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
+import com.home.samplerestserver.messages.signed.CommonResponse;
+import com.home.samplerestserver.messages.signed.WeighingRequest;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -50,6 +52,8 @@ public class TestClient {
         jsonDeleteAirline(client);
 
         options(client);
+        
+        jsonWeighingRequest(client);
     }
     
     public static void simple(Client client) {
@@ -156,4 +160,29 @@ public class TestClient {
         LOG.info(response);
         LOG.info(CALL_SEPARATOR);
     }
+
+    public static void jsonWeighingRequest(Client client) {
+        Invocation.Builder invocationBuilder = client.target(REST_MESSAGE_URL)
+                .path("jsonweighing")
+                .request(MediaType.APPLICATION_JSON);
+        
+        WeighingRequest request = new WeighingRequest();
+        request.getMessage().getHeader().setMsg_id("434");
+        request.getMessage().setScale("SCALE1");
+        
+        CommonResponse response = invocationBuilder.post(
+                Entity.entity(request, MediaType.APPLICATION_JSON), CommonResponse.class);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            String requestJson = mapper.writeValueAsString(response);
+            LOG.info(requestJson);
+        }
+        catch (JsonProcessingException jpex) {
+            System.err.println("ERROR: " + jpex);
+        }
+
+        LOG.info(response.toString());   
+        LOG.info(CALL_SEPARATOR);
+    }    
 }

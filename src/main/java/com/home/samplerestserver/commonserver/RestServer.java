@@ -6,8 +6,6 @@ import java.net.URISyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.ServerConfiguration;
-import org.glassfish.grizzly.http.server.accesslog.AccessLogBuilder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -36,16 +34,11 @@ public class RestServer implements RestServerMBean {
 
     private static HttpServer httpServer = null;
 
-    /**
-     * It's not allowed to create an instance.
-     */
     public RestServer() {
         LOG.trace("--> RestServer");
-        host = System.getenv("HOSTNAME");
-        if (host == null) host = HOST_DEFAULT;
+        host = System.getProperty("host", HOST_DEFAULT);
         
-        port = System.getenv("PORT");
-        if (port == null) port = PORT_DEFAULT;
+        port = System.getProperty("port", PORT_DEFAULT);
         
         baseURI = PROTOCOL 
                 + host + ":" + port + "/" + PATH + "/";
@@ -90,10 +83,6 @@ public class RestServer implements RestServerMBean {
                 
                 httpServer = GrizzlyHttpServerFactory
                         .createHttpServer(new URI(baseURI), rc);
-                ServerConfiguration serverConfiguration = httpServer.getServerConfiguration();
-
-                final AccessLogBuilder builder = new AccessLogBuilder("./logs/access.log");
-                builder.instrument(serverConfiguration);
 
                 httpServer.start();
                 LOG.info("Jersey app started with WADL available at " + baseURI + "application.wadl");
