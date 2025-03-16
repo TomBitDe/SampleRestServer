@@ -175,8 +175,8 @@ public class TestClient {
 
         try {
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-            String requestJson = mapper.writeValueAsString(response);
-            LOG.info(requestJson);
+            String responseJson = mapper.writeValueAsString(response);
+            LOG.info(responseJson);
         }
         catch (JsonProcessingException jpex) {
             System.err.println("ERROR: " + jpex);

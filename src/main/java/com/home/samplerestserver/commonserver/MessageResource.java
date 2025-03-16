@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -171,29 +172,13 @@ public class MessageResource {
         return ret;
     }
 
-//    @POST
-//    @Path("jsonweighing")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public CommonResponse jsonWeighingRequest(WeighingRequest request) {
-//        CommonResponse ret = new CommonResponse();
-//    
-//        LOG.debug("Process WeighingRequest: " + request);
-//        
-//        return ret;
-//    }
-    
     @POST
     @Path("jsonweighing")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    public CommonResponse jsonWeighingRequest(WeighingRequest request) {
     public CommonResponse jsonWeighingRequest(@Context ContainerRequestContext requestContext) {
         CommonResponse ret = new CommonResponse();
         
-//        @Context
-//        private ContainerRequestContext requestContext;
-
         try {
             InputStream inputStream = requestContext.getEntityStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
@@ -208,15 +193,17 @@ public class MessageResource {
 
             // JSON in WeighingRequest umwandeln
             ObjectMapper objectMapper = new ObjectMapper();
-            WeighingRequest weighingRequest = objectMapper.readValue(rawData.toString(), WeighingRequest.class);
+            WeighingRequest weighingRequest = objectMapper.readValue(rawData.toString(),
+                    WeighingRequest.class);
 
             // WeighingRequest-Object is now available
             LOG.info("Parsed WeighingRequest: " + weighingRequest);
 
             // Beispiel: Daten verarbeiten
+            ret.setStatus("200");
             ret.setMessage("Weighing request received successfully");
         }
-        catch (Exception e) {
+        catch (IOException e) {
             LOG.error("Error reading request body", e);
         }
 
