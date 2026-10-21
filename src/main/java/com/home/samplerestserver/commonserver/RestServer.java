@@ -79,7 +79,7 @@ public class RestServer implements RestServerMBean {
                         .packages("com.home.samplerestserver.commonserver")
                         .register(CustomLoggingFilter.class)
                         .register(JacksonJsonProvider.class)
-                        .property("jersey.config.server.tracing.type ", "ALL");
+                        .property("jersey.config.server.tracing.type", "ALL");
                 
                 httpServer = GrizzlyHttpServerFactory
                         .createHttpServer(new URI(baseURI), rc);

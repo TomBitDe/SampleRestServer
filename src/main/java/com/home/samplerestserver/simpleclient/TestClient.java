@@ -15,15 +15,15 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * A simple test client just to call REST here.
  */
 public class TestClient {
-    private static final Logger LOG = Logger.getLogger(TestClient.class.getName());
+    private static final Logger LOG = LogManager.getLogger(TestClient.class.getName());
     
     private static final String REST_MESSAGE_URL = "http://localhost:8080/rest/message/";
     private static final String CALL_SEPARATOR = "------------------------------------------------------------";
@@ -96,7 +96,7 @@ public class TestClient {
             LOG.info(airlineJson);
         }
         catch (JsonProcessingException jpex) {
-            System.err.println("ERROR: " + jpex);
+            LOG.error("Cannot serialize response: {}", jpex.getMessage(), jpex);
         }
 
         LOG.info(airline.toString());
@@ -113,7 +113,7 @@ public class TestClient {
         if (resp.getStatus() != 200) {
             String msg = String.format("ERROR: status: %d",
                                        resp.getStatus());
-            System.err.println(msg);
+            LOG.error(msg);
         }
         else {
             AirlineInfo airlineInfo = resp.readEntity(AirlineInfo.class);
@@ -124,7 +124,7 @@ public class TestClient {
                 LOG.info(airlineJson);
             }
             catch (JsonProcessingException jpex) {
-                System.err.println("ERROR: " + jpex);
+                LOG.error("Cannot serialize response: {}", jpex.getMessage(), jpex);
             }
 
             LOG.info(airlineInfo.toString());
@@ -141,14 +141,13 @@ public class TestClient {
         Response response = invocationBuilder.delete();
         
         // No JSON content expected just response; NO ObjectMapper needed
-        LOG.log(Level.INFO, "HTTP-Status: [{0}] Resonse=[{1}]", new Object[]{response.getStatus(), response.toString()});
-        
+        LOG.info("HTTP-Status: [{}] Resonse=[{}]", response.getStatus(), response.toString());
+
         if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()
          || response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
-            LOG.log(Level.INFO, "As expected: status=[{0}] reason=[{1}]",
-                    new Object[]{response.getStatus(), response.getStatusInfo()});
+            LOG.info("As expected: status=[{}] reason=[{}]", response.getStatus(), response.getStatusInfo());
         else {
-            LOG.log(Level.INFO, "Not expected: {0}", response.getStatus());            
+            LOG.info("Not expected: {}", response.getStatus());
         }
         LOG.info(CALL_SEPARATOR);
     }
@@ -179,7 +178,7 @@ public class TestClient {
             LOG.info(responseJson);
         }
         catch (JsonProcessingException jpex) {
-            System.err.println("ERROR: " + jpex);
+            LOG.error("Cannot serialize response: {}", jpex.getMessage(), jpex);
         }
 
         LOG.info(response.toString());   

@@ -4,15 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConvertDateTime {
-    private static final Logger log = Logger.getLogger(ConvertDateTime.class.getName());
+    private static final Logger log = LogManager.getLogger(ConvertDateTime.class.getName());
 
     private static DatatypeFactory dtf;
 
@@ -25,7 +26,7 @@ public class ConvertDateTime {
                 day = Integer.parseInt(dttm.substring(6, 8));
                 return dtf.newXMLGregorianCalendar(year, month, day, hour, minute, second, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
             } catch (NumberFormatException ex) {
-                log.severe(ex.getMessage());
+                log.error(ex.getMessage(), ex);
             }
         }
         return null;
@@ -40,7 +41,7 @@ public class ConvertDateTime {
                 second = Integer.parseInt(dttm.substring(12, 14));
                 return dtf.newXMLGregorianCalendar(year, month, day, hour, minute, second, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
             } catch (NumberFormatException ex) {
-                log.severe(ex.getMessage());
+                log.error(ex.getMessage(), ex);
             }
         }
         return null;
@@ -58,7 +59,7 @@ public class ConvertDateTime {
                 second = Integer.parseInt(dttm.substring(12, 14));
                 return dtf.newXMLGregorianCalendar(year, month, day, hour, minute, second, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
             } catch (NumberFormatException ex) {
-                log.severe(ex.getMessage());
+                log.error(ex.getMessage(), ex);
             }
         }
         return null;
@@ -75,7 +76,7 @@ public class ConvertDateTime {
                 }
                 return dtf.newDuration(true, 0, 0, 0, hour, minute, second);
             } catch (NumberFormatException ex) {
-                log.severe(ex.getMessage());
+                log.error(ex.getMessage(), ex);
             }
         }
         return null;
@@ -155,7 +156,7 @@ public class ConvertDateTime {
         try {
             dtf = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException ex) {
-            log.severe(ex.toString());
+            log.error("Cannot create DatatypeFactory", ex);
         }
     }
 }
