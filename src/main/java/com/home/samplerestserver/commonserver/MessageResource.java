@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 @Path("message")
 public class MessageResource {
     private static final Logger LOG = LogManager.getLogger(MessageResource.class.getName());
-    private static final List<Airline> memList = new ArrayList<>();
+    private static final ConcurrentHashMap<String, Airline> memMap = new ConcurrentHashMap<>();
     
     @Context
     private ContainerRequestContext requestContext;
@@ -90,10 +90,10 @@ public class MessageResource {
     @Path("jsonairlineinfo")
     @Produces(MediaType.APPLICATION_JSON)
     public AirlineInfo jsonairlineinfo() {
-        AirlineInfo ret = new AirlineInfo(new ArrayList<>(memList));
-        
+        AirlineInfo ret = new AirlineInfo(new ArrayList<>(memMap.values()));
+
         LOG.debug(ret);
-        
+
         return ret;
     }
 
@@ -109,19 +109,27 @@ public class MessageResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Airline jsonCreateAirlineInfo(Airline airline) {
         Airline ret = new Airline();
-        
+
         if (airline == null) {
             LOG.error("airline=null");
+            return ret;
         }
-        else {
-            ret.setCode(airline.getCode());
-            ret.setName(airline.getName());
-            
-            LOG.debug(ret);
 
-            memList.add(ret);
+        String code = airline.getCode();
+        String name = airline.getName();
+
+        if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            LOG.error("airline invalid: code or name null/empty");
+            return ret;
         }
-        
+
+        ret.setCode(code.trim());
+        ret.setName(name.trim());
+
+        LOG.debug(ret);
+
+        memMap.putIfAbsent(ret.getCode(), ret);
+
         return ret;
     }
 
@@ -136,25 +144,19 @@ public class MessageResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response jsonDeleteAirlineInfo(@PathParam("code") String code) {
-        if (code == null || code.isEmpty()) {
+        if (code == null || code.trim().isEmpty()) {
             LOG.error("code=null or empty");
-            return  Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+
+        Airline ret = memMap.remove(code.trim());
+        if (ret != null) {
+            LOG.debug("Deleted airline: " + ret);
+            return Response.status(Response.Status.NO_CONTENT).build(); // 204 No Content
         }
         else {
-            Airline ret = memList.stream()
-                    .filter(a -> a.getCode().equals(code))
-                    .findFirst()
-                    .orElse(null);
-
-            if (ret != null) {
-                memList.remove(ret);
-                LOG.debug("Deleted airline: " + ret);
-                return Response.status(Response.Status.NO_CONTENT).build(); // 204 No Content
-            }
-            else {
-                LOG.warn("Airline not found with code: " + code);
-                return Response.status(Response.Status.NOT_FOUND).build(); // 404 No Found
-            }
+            LOG.warn("Airline not found with code: " + code);
+            return Response.status(Response.Status.NOT_FOUND).build(); // 404 No Found
         }
     }
     

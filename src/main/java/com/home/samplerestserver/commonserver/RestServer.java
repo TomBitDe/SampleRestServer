@@ -18,32 +18,29 @@ public class RestServer implements RestServerMBean {
 
     private static final String HOST_DEFAULT = "localhost";
     private static final String PORT_DEFAULT = "8080";
-    private static final String PROTOCOL;
-    private static final String PATH;
-    private static String baseURI;
-    private static String host;
-    private static String port;
-    
-    private static boolean running;
+    private static final String PROTOCOL = "http://";
+    private static final String PATH = "rest";
 
-    static {
-        PROTOCOL = "http://";
-        PATH = "rest";
-        running = false;
-    }
+    private String baseURI;
+    private String host;
+    private String port;
 
-    private static HttpServer httpServer = null;
+    private volatile boolean running;
+
+    private HttpServer httpServer = null;
 
     public RestServer() {
         LOG.trace("--> RestServer");
         host = System.getProperty("host", HOST_DEFAULT);
-        
+
         port = System.getProperty("port", PORT_DEFAULT);
-        
-        baseURI = PROTOCOL 
+
+        baseURI = PROTOCOL
                 + host + ":" + port + "/" + PATH + "/";
         LOG.info("baseURI = {}", baseURI);
-        
+
+        running = false;
+
         LOG.trace("<-- RestServer");
     }
 
@@ -66,21 +63,19 @@ public class RestServer implements RestServerMBean {
      * @return true in any case so far
      */
     @Override
-    public boolean startServices() {
+    public synchronized boolean startServices() {
         LOG.trace("--> startServices");
 
         try {
-            running = false;
-            
             if (httpServer == null) {
                 baseURI = PROTOCOL + getHost() + ":" + getPort() + "/" + PATH + "/";
-                
+
                 ResourceConfig rc = new ResourceConfig()
                         .packages("com.home.samplerestserver.commonserver")
                         .register(CustomLoggingFilter.class)
                         .register(JacksonJsonProvider.class)
                         .property("jersey.config.server.tracing.type", "ALL");
-                
+
                 httpServer = GrizzlyHttpServerFactory
                         .createHttpServer(new URI(baseURI), rc);
 
@@ -90,11 +85,12 @@ public class RestServer implements RestServerMBean {
             else {
                 LOG.info("Services already running. No need to start again");
             }
-            
+
             running = true;
         }
         catch (URISyntaxException | IOException ex) {
-            LOG.error("StartServices failed: " + ex.getMessage());
+            LOG.error("StartServices failed", ex);
+            running = false;
             return false;
         }
         LOG.trace("<-- startServices");
@@ -108,7 +104,7 @@ public class RestServer implements RestServerMBean {
      * @return true in any case so far
      */
     @Override
-    public boolean stopServices() {
+    public synchronized boolean stopServices() {
         LOG.trace("--> stopServices");
 
         if (httpServer != null) {
@@ -120,28 +116,28 @@ public class RestServer implements RestServerMBean {
             LOG.info("Http server already stopped. No need to stop again");
         }
         running = false;
-        
+
         LOG.trace("<-- stopServices");
 
         return true;
     }
     
     @Override
-    public String getHost() {
+    public synchronized String getHost() {
         return host;
     }
     @Override
-    public void setHost(String host) {
-        RestServer.host = host;
+    public synchronized void setHost(String host) {
+        this.host = host;
     }
 
     @Override
-    public String getPort() {
+    public synchronized String getPort() {
         return port;
     }
     @Override
-    public void setPort(String port) {
-        RestServer.port = port;
+    public synchronized void setPort(String port) {
+        this.port = port;
     }
     
     @Override

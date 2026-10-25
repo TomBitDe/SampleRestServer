@@ -38,14 +38,19 @@ public class MainEntry {
     public static native String kwsrcvrcv(String inBuffer);
 
     private static RestServer restServer = null;
-    
+
+    private static synchronized RestServer getRestServer() {
+        if (restServer == null) {
+            restServer = new RestServer();
+        }
+        return restServer;
+    }
+
     /**
      * Runner entry.
      */
     public MainEntry() {
-        if (restServer == null) {
-            restServer = new RestServer();
-        }
+        getRestServer();
     }
     
     /**
@@ -60,7 +65,12 @@ public class MainEntry {
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
 
         try {
-            return restServer.startServices();
+            RestServer server = getRestServer();
+            if (server == null) {
+                LOG.error("RestServer is null");
+                return false;
+            }
+            return server.startServices();
         }
         catch (Throwable e) {
             LOG.error(e, e);
@@ -79,7 +89,12 @@ public class MainEntry {
     public static boolean stopWS() {
         LOG.info("Enter stopWS");
         try {
-            return restServer.stopServices();
+            RestServer server = restServer;
+            if (server == null) {
+                LOG.warn("RestServer is null");
+                return true;
+            }
+            return server.stopServices();
         }
         catch (Exception e) {
             LOG.error(e, e);
@@ -101,15 +116,11 @@ public class MainEntry {
      */
     public static void main(String[] args) throws Exception {
         LOG.trace("--> main");
-        
+
         standAloneMode = true;
         LOG.debug("standAloneMode = {}", standAloneMode);
 
-        // Create the RestServer
-        if (restServer == null) {
-            restServer = new RestServer();
-        }
-
+        getRestServer();
         startWS();
         LOG.trace("<-- main");
     }
