@@ -1,9 +1,11 @@
 package com.home.samplerestserver.commonserver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
 import com.home.samplerestserver.messages.signed.CommonResponse;
+import com.home.samplerestserver.messages.signed.ErrorContent;
 import com.home.samplerestserver.messages.signed.WeighingRequest;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -12,7 +14,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -178,12 +179,9 @@ public class MessageResource {
     @Path("jsonweighing")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public CommonResponse jsonWeighingRequest(@Context ContainerRequestContext requestContext) {
-        CommonResponse ret = new CommonResponse();
-        
-        try {
-            InputStream inputStream = requestContext.getEntityStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+    public Response jsonWeighingRequest(@Context ContainerRequestContext requestContext) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(requestContext.getEntityStream(), StandardCharsets.UTF_8))) {
 
             StringBuilder rawData = new StringBuilder();
             String line;
@@ -191,25 +189,49 @@ public class MessageResource {
                 rawData.append(line);
             }
 
-            LOG.info("Raw Data: " + rawData.toString());
+            LOG.info("Raw Data: {}", rawData);
 
-            // JSON in WeighingRequest umwandeln
             ObjectMapper objectMapper = new ObjectMapper();
             WeighingRequest weighingRequest = objectMapper.readValue(rawData.toString(),
                     WeighingRequest.class);
 
-            // WeighingRequest-Object is now available
-            LOG.info("Parsed WeighingRequest: " + weighingRequest);
+            LOG.info("Parsed WeighingRequest: {}", weighingRequest);
 
-            // Beispiel: Daten verarbeiten
+            CommonResponse ret = new CommonResponse();
             ret.setStatus("200");
             ret.setMessage("Weighing request received successfully");
+
+            return Response.ok(ret, MediaType.APPLICATION_JSON).build();
+        }
+        catch (JsonProcessingException e) {
+            LOG.error("Invalid JSON request body", e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(errorResponse(Response.Status.BAD_REQUEST,
+                            "Invalid JSON request body"))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
         catch (IOException e) {
             LOG.error("Error reading request body", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(errorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                            "Error reading request body"))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
+    }
 
-        return ret;
+    private static CommonResponse errorResponse(Response.Status status, String detail) {
+        ErrorContent error = new ErrorContent();
+        error.setCode(status.getStatusCode());
+        error.setDetail(detail);
+
+        CommonResponse response = new CommonResponse();
+        response.setStatus(String.valueOf(status.getStatusCode()));
+        response.setMessage(status.getReasonPhrase());
+        response.setError(error);
+
+        return response;
     }
    
 //    @POST

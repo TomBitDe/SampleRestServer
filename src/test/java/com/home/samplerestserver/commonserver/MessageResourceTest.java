@@ -2,6 +2,8 @@ package com.home.samplerestserver.commonserver;
 
 import com.home.samplerestserver.messages.Airline;
 import com.home.samplerestserver.messages.AirlineInfo;
+import com.home.samplerestserver.messages.signed.CommonResponse;
+import com.home.samplerestserver.messages.signed.WeighingRequest;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -157,6 +159,73 @@ public class MessageResourceTest {
         || Response.Status.NOT_FOUND.getStatusCode() == resp.getStatus());
     }
     
+    /**
+     * Test of jsonWeighingRequest method with a valid request body.
+     */
+    @Test
+    public void testJsonWeighingRequestValid() {
+        System.out.println("jsonweighing valid POST");
+
+        webTarget = webTarget.path("message").path("jsonweighing");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+
+        WeighingRequest request = new WeighingRequest();
+        request.getMessage().getHeader().setMsg_id("434");
+        request.getMessage().setScale("SCALE1");
+
+        try (Response resp = invocationBuilder.post(
+                Entity.entity(request, MediaType.APPLICATION_JSON))) {
+            System.out.println("HTTP response status=[" + resp.getStatus() + ']');
+            Assert.assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+
+            CommonResponse commonResponse = resp.readEntity(CommonResponse.class);
+            Assert.assertEquals("200", commonResponse.getStatus());
+            Assert.assertEquals("Weighing request received successfully",
+                    commonResponse.getMessage());
+        }
+    }
+
+    /**
+     * Test of jsonWeighingRequest method with malformed JSON.
+     */
+    @Test
+    public void testJsonWeighingRequestMalformedJson() {
+        System.out.println("jsonweighing malformed JSON POST");
+
+        webTarget = webTarget.path("message").path("jsonweighing");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+
+        try (Response resp = invocationBuilder.post(
+                Entity.entity("{not valid json", MediaType.APPLICATION_JSON))) {
+            System.out.println("HTTP response status=[" + resp.getStatus() + ']');
+            Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), resp.getStatus());
+
+            CommonResponse commonResponse = resp.readEntity(CommonResponse.class);
+            Assert.assertEquals("400", commonResponse.getStatus());
+            Assert.assertNotNull(commonResponse.getError());
+            Assert.assertEquals(Integer.valueOf(400), commonResponse.getError().getCode());
+            Assert.assertEquals("Invalid JSON request body",
+                    commonResponse.getError().getDetail());
+        }
+    }
+
+    /**
+     * Test of jsonWeighingRequest method with an empty request body.
+     */
+    @Test
+    public void testJsonWeighingRequestEmptyBody() {
+        System.out.println("jsonweighing empty body POST");
+
+        webTarget = webTarget.path("message").path("jsonweighing");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+
+        try (Response resp = invocationBuilder.post(
+                Entity.entity("", MediaType.APPLICATION_JSON))) {
+            System.out.println("HTTP response status=[" + resp.getStatus() + ']');
+            Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), resp.getStatus());
+        }
+    }
+
     /**
      * Test of options method, of class MessageResource.
      */
