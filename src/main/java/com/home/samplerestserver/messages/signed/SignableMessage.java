@@ -1,7 +1,9 @@
 package com.home.samplerestserver.messages.signed;
 
-import com.home.samplerestserver.util.MD5Signature;
+import com.home.samplerestserver.util.SignatureAlgorithm;
+import com.home.samplerestserver.util.SignatureAlgorithms;
 import java.io.Serializable;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public abstract class SignableMessage implements Serializable {
@@ -17,12 +19,16 @@ public abstract class SignableMessage implements Serializable {
         this.signHeader = signHeader;
     }
     
-    public void sign(String jsonString, String key) throws NoSuchAlgorithmException {
-        signHeader.setSign(MD5Signature.calculateMD5Signature(jsonString, key));
+    public void sign(String jsonString, String key)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        SignatureAlgorithm algorithm = SignatureAlgorithms.of(signHeader.getSignType());
+        signHeader.setSign(algorithm.calculate(jsonString, key));
     }
-    
-    public boolean verify(String jsonData, String key) throws NoSuchAlgorithmException {
-        return MD5Signature.verifySignature(jsonData, signHeader.getSign(), key);
+
+    public boolean verify(String jsonData, String key)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        SignatureAlgorithm algorithm = SignatureAlgorithms.of(signHeader.getSignType());
+        return algorithm.verify(jsonData, signHeader.getSign(), key);
     }
 
     @Override
