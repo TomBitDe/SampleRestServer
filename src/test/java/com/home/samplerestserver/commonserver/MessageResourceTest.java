@@ -11,6 +11,13 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -241,6 +248,164 @@ public class MessageResourceTest {
         String response = invocationBuilder.options(String.class);
 
         Assert.assertEquals("GET", response);
+    }
+
+    /**
+     * Test that deleting an unknown airline returns 404.
+     */
+    @Test
+    public void testJsonDeleteUnknownAirlineReturns404() {
+        System.out.println("jsondeleteairlineinfo unknown code DELETE");
+
+        webTarget = webTarget.path("message").path("jsonairline").path("NOEXIST");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+
+        try (Response resp = invocationBuilder.delete()) {
+            System.out.println("HTTP response status=[" + resp.getStatus() + ']');
+            Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), resp.getStatus());
+        }
+    }
+
+    /**
+     * Test that posting the same airline twice keeps a single entry.
+     */
+    @Test
+    public void testJsonCreateDuplicateAirlineInfo() {
+        System.out.println("jsoncreateairlineinfo duplicate POST");
+
+        final String code = "DUP";
+        Airline airline = new Airline(code, "Duplicate Airline");
+
+        try {
+            WebTarget createTarget = webTarget.path("message").path("jsonairline");
+
+            try (Response first = createTarget.request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(airline, MediaType.APPLICATION_JSON))) {
+                Assert.assertEquals(Response.Status.OK.getStatusCode(), first.getStatus());
+            }
+
+            try (Response second = createTarget.request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(airline, MediaType.APPLICATION_JSON))) {
+                System.out.println("HTTP response status=[" + second.getStatus() + ']');
+                Assert.assertEquals(Response.Status.OK.getStatusCode(), second.getStatus());
+
+                Airline responseAirline = second.readEntity(Airline.class);
+                Assert.assertEquals(code, responseAirline.getCode());
+                Assert.assertEquals(airline.getName(), responseAirline.getName());
+            }
+
+            AirlineInfo airlineInfo = webTarget.path("message").path("jsonairlineinfo")
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(AirlineInfo.class);
+
+            long occurrences = 0;
+            if (airlineInfo.getAirlines() != null) {
+                occurrences = airlineInfo.getAirlines().stream()
+                        .filter(a -> code.equals(a.getCode()))
+                        .count();
+            }
+
+            Assert.assertEquals("Airline " + code + " must be stored exactly once", 1L, occurrences);
+        }
+        finally {
+            webTarget.path("message").path("jsonairline").path(code)
+                    .request(MediaType.APPLICATION_JSON)
+                    .delete()
+                    .close();
+        }
+    }
+
+    /**
+     * Test simultaneous POST, DELETE and GET requests.
+     *
+     * @throws Exception if a worker fails or times out
+     */
+    @Test
+    public void testConcurrentPostAndDelete() throws Exception {
+        System.out.println("jsonairline concurrent POST/DELETE/GET");
+
+        final int writers = 8;
+        final int readers = 8;
+        final int iterations = 5;
+        final String prefix = "CONC";
+
+        ExecutorService executor = Executors.newFixedThreadPool(writers + readers);
+        CountDownLatch start = new CountDownLatch(1);
+        List<Future<?>> futures = new ArrayList<>();
+
+        try {
+            for (int writer = 0; writer < writers; writer++) {
+                final int writerIndex = writer;
+                futures.add(executor.submit(() -> {
+                    start.await();
+                    for (int i = 0; i < iterations; i++) {
+                        String code = prefix + writerIndex + "_" + i;
+                        Airline airline = new Airline(code, "Concurrent " + code);
+
+                        try (Response postResp = webTarget.path("message").path("jsonairline")
+                                .request(MediaType.APPLICATION_JSON)
+                                .post(Entity.entity(airline, MediaType.APPLICATION_JSON))) {
+                            Assert.assertEquals(Response.Status.OK.getStatusCode(),
+                                    postResp.getStatus());
+                        }
+
+                        try (Response deleteResp = webTarget.path("message")
+                                .path("jsonairline").path(code)
+                                .request(MediaType.APPLICATION_JSON)
+                                .delete()) {
+                            Assert.assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
+                                    deleteResp.getStatus());
+                        }
+                    }
+                    return null;
+                }));
+            }
+
+            for (int reader = 0; reader < readers; reader++) {
+                futures.add(executor.submit(() -> {
+                    start.await();
+                    for (int i = 0; i < iterations; i++) {
+                        try (Response getResp = webTarget.path("message").path("jsonairlineinfo")
+                                .request(MediaType.APPLICATION_JSON)
+                                .get()) {
+                            Assert.assertEquals(Response.Status.OK.getStatusCode(),
+                                    getResp.getStatus());
+                        }
+                    }
+                    return null;
+                }));
+            }
+
+            start.countDown();
+
+            for (Future<?> future : futures) {
+                future.get(60, TimeUnit.SECONDS);
+            }
+        }
+        finally {
+            executor.shutdownNow();
+
+            for (int writer = 0; writer < writers; writer++) {
+                for (int i = 0; i < iterations; i++) {
+                    String code = prefix + writer + "_" + i;
+                    webTarget.path("message").path("jsonairline").path(code)
+                            .request(MediaType.APPLICATION_JSON)
+                            .delete()
+                            .close();
+                }
+            }
+        }
+
+        AirlineInfo airlineInfo = webTarget.path("message").path("jsonairlineinfo")
+                .request(MediaType.APPLICATION_JSON)
+                .get(AirlineInfo.class);
+
+        if (airlineInfo.getAirlines() != null) {
+            for (Airline airline : airlineInfo.getAirlines()) {
+                Assert.assertFalse("Unexpected leftover airline: " + airline,
+                        airline.getCode().startsWith(prefix));
+            }
+        }
     }
 
 }
