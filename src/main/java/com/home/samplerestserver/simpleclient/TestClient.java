@@ -37,23 +37,24 @@ public class TestClient {
      */
     public static void main(String[] args) {
         ClientConfig clientConfig = new ClientConfig().register(CustomLoggingFilter.class);
-        Client client = ClientBuilder.newClient(clientConfig);
-        
-        simple(client);
 
-        ping(client);
-        
-        serverInfo(client);
+        try (Client client = ClientBuilder.newClient(clientConfig)) {
+            simple(client);
 
-        jsonAirline(client);
-        
-        jsonAirlineInfo(client);
-        
-        jsonDeleteAirline(client);
+            ping(client);
 
-        options(client);
-        
-        jsonWeighingRequest(client);
+            serverInfo(client);
+
+            jsonAirline(client);
+
+            jsonAirlineInfo(client);
+
+            jsonDeleteAirline(client);
+
+            options(client);
+
+            jsonWeighingRequest(client);
+        }
     }
     
     public static void simple(Client client) {

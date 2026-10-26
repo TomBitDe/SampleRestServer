@@ -19,7 +19,7 @@ public class BitcoinRestClient {
      * @param args no arguments needed so far
      */
     public static void main(String[] args) {
-        final String url = "http://api.coindesk.com/v1/bpi/currentprice.json";
+        final String url = "https://data-api.coindesk.com/v1/bpi/currentprice.json";
         JsonObject jsonObj = JsonObjectFromUrlUtil.getJsonObjectFromUrl(url);
 
         LOG.info("\n\n------------ Ausgabe aller Root-Key/Values:\n");

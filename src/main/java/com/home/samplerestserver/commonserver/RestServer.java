@@ -131,6 +131,15 @@ public class RestServer implements RestServerMBean {
         this.host = host;
     }
 
+    /**
+     * Gets the base URI the REST services are published under.
+     *
+     * @return the base URI, e.g. http://localhost:8080/rest/
+     */
+    public synchronized String getBaseURI() {
+        return baseURI;
+    }
+
     @Override
     public synchronized String getPort() {
         return port;

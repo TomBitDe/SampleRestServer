@@ -39,7 +39,7 @@ public class MainEntry {
 
     private static RestServer restServer = null;
 
-    private static synchronized RestServer getRestServer() {
+    static synchronized RestServer getRestServer() {
         if (restServer == null) {
             restServer = new RestServer();
         }

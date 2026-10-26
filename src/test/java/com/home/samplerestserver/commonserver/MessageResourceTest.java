@@ -55,7 +55,7 @@ public class MessageResourceTest {
     @Before
     public void setUp() {
         client = ClientBuilder.newClient(new ClientConfig().register(CustomLoggingFilter.class));
-        webTarget = client.target("http://localhost:8080/rest/");
+        webTarget = client.target(MainEntry.getRestServer().getBaseURI());
     }
 
     /**
@@ -64,7 +64,10 @@ public class MessageResourceTest {
     @After
     public void tearDown() {
         webTarget = null;
-        client = null;
+        if (client != null) {
+            client.close();
+            client = null;
+        }
     }
 
     /**
